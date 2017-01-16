@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 with open('requirements_dev.txt') as f:
     TEST_REQUIRES = [l.strip() for l in f.readlines() if l]
 
-with open('README.rst') as readme_file:
+with open('README.md') as readme_file:
     readme = readme_file.read()
 
 try:
