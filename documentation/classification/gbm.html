@@ -1,0 +1,519 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Gradient Boosting Machine (Classifier) &mdash; easyML 0.1.0al documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="easyML 0.1.0al documentation" href="../index.html"/>
+        <link rel="up" title="Classification Models" href="../classification.html"/>
+        <link rel="next" title="Linear Support Vector Machine (Classifier)" href="linear_svm.html"/>
+        <link rel="prev" title="Adaboost (Classifier)" href="adaboost.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> easyML
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../datablock.html">DataBlock Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../preprocess.html">Pre-Processing Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../feature_engineering.html">Feature Engineering Module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../classification.html">Classification Models</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../classification.html#supported-algorithms">Supported Algorithms</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="logistic_regression.html">Logistic Regression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decision_tree.html">Decision Tree (Classifier)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="random_forest.html">Random Forest (Classifier)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="extra_trees.html">Extra Trees Forest (Classifier)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="adaboost.html">Adaboost (Classifier)</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Gradient Boosting Machine (Classifier)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="linear_svm.html">Linear Support Vector Machine (Classifier)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#notes">Notes</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">easyML</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../api.html">API Documentation</a> &raquo;</li>
+      
+          <li><a href="../classification.html">Classification Models</a> &raquo;</li>
+      
+    <li>Gradient Boosting Machine (Classifier)</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/classification/gbm.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gradient-boosting-machine-classifier">
+<h1>Gradient Boosting Machine (Classifier)<a class="headerlink" href="#gradient-boosting-machine-classifier" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><dl class="class">
+<dt id="easyML.models_classification.gradient_boosting_machine">
+<em class="property">class </em><code class="descclassname">easyML.models_classification.</code><code class="descname">gradient_boosting_machine</code><span class="sig-paren">(</span><em>data_block</em>, <em>predictors=[]</em>, <em>cv_folds=10</em>, <em>scoring_metric=u'accuracy'</em>, <em>additional_display_metrics=[]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easyML/models_classification.html#gradient_boosting_machine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.models_classification.gradient_boosting_machine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a GBM (Gradient Boosting Machine) model using implementation 
+from scikit-learn.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_block</strong> : object of type easyML.DataBlock</p>
+<blockquote>
+<div><p>An object of easyML&#8217;s DataBlock class. You should first create an 
+object of that class and then pass it as a parameter.</p>
+</div></blockquote>
+<p><strong>predictors</strong> : list of strings, default []</p>
+<blockquote>
+<div><p>A list of columns which are to be used as predictors (also called 
+independent variables or features).
+The default value is an empty list because these need not always be
+defined at the time of class initialization. The set_predictors 
+method can be used later but before creating any predictive model.</p>
+</div></blockquote>
+<p><strong>cv_folds</strong> : int, default 5</p>
+<blockquote>
+<div><p>The number of folds to be created while performing CV.
+This parameter can be adjusted later by passing using the 
+set_parameters method</p>
+</div></blockquote>
+<p><strong>scoring_metric</strong> : str, default &#8216;accuracy&#8217;</p>
+<blockquote>
+<div><p>The scoring metric to be used for evaluating the model across the
+different functions available. The available options are 
+- &#8216;accuracy&#8217;
+- &#8216;auc&#8217;
+- &#8216;log_loss&#8217;
+- &#8216;f1&#8217;
+- &#8216;average_precision&#8217;</p>
+</div></blockquote>
+<p><strong>additional_display_metrics</strong> : list of string, default []</p>
+<blockquote class="last">
+<div><p>A list of additional display metrics to be shown for the test and
+train dataframes in data_block. Note:
+- These will be just shown for user reference and not actually used 
+for model evaluation
+- The same available options as scoring_metric apply</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="easyML.models_classification.gradient_boosting_machine.fit_model">
+<code class="descname">fit_model</code><span class="sig-paren">(</span><em>performCV=True</em>, <em>printResults=True</em>, <em>printTopN=None</em>, <em>printConfusionMatrix=True</em>, <em>printModelParameters=True</em><span class="sig-paren">)</span><a class="headerlink" href="#easyML.models_classification.gradient_boosting_machine.fit_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>An advanced model fit function which fits the model on the 
+training data and performs cross-validation. It prints a model
+report containing the following:
+- The parameters being used to fit the model
+- Confusion matrix for the train and test data
+- Scoring metrics for the train and test data
+- CV mean and std scores for scoring metric
+- Additional scoring metrics on train and test data, if specified</p>
+<p>Note that you can decide which details are to be printed using method
+arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>performCV</strong> : bool, default True</p>
+<blockquote>
+<div><p>if True, the model performs cross-validation using the number of
+folds as the cv_folds parameter of the model</p>
+</div></blockquote>
+<p><strong>printResults</strong> : bool, default True</p>
+<blockquote>
+<div><p>if True, prints the report of the model. This should be kept as 
+True unless the module being used in a background script</p>
+</div></blockquote>
+<p><strong>printTopN</strong> : int, default None</p>
+<blockquote>
+<div><p>The number of top scored features to be displayed in the feature 
+importance or coefficient plot of the model. If None, all the 
+features will be displayed by default. Note:
+- For algorithms supporting real coefficient, the features will 
+be sorted by their magnitudes (absolute values).
+- For algorithms supporting positive feature importance scores, 
+features are sorted on the score itself.</p>
+<p>This will be ignored is printResults is False.</p>
+</div></blockquote>
+<p><strong>printConfusionMatrix</strong> : bool, default True</p>
+<blockquote>
+<div><p>if True, the confusion matrix for the train and test dataframes 
+are printed, otherwise they are ommitted.
+This will be ignored is printResults is False.</p>
+</div></blockquote>
+<p><strong>print</strong></p>
+<p><strong>printModelParameters</strong> : bool, default True</p>
+<blockquote class="last">
+<div><p>if True, the parameters being used to the run the model are 
+printed. It helps in validating the parameters and also makes
+jupyter notebooks more informative if used</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.models_classification.gradient_boosting_machine.grid_search">
+<code class="descname">grid_search</code><span class="sig-paren">(</span><em>param_grid</em>, <em>n_jobs=1</em>, <em>iid=True</em>, <em>cv=5</em>, <em>getResults=False</em><span class="sig-paren">)</span><a class="headerlink" href="#easyML.models_classification.gradient_boosting_machine.grid_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to perform GridSearch with cross-validation (CV) to find
+the optimum parameters for the model.</p>
+<dl class="docutils">
+<dt>param_grid</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">dict </span><dd>A dictionary with parameters names (string) as keys and lists of
+parameter settings to try as values.
+Example: for a decision tree, {&#8216;max_depth&#8217;:[3,4,5],
+&#8216;min_samples_split&#8217;:[30,50,100]} will check all the 9 possible 
+combinations of parameters</dd>
+<dt>n_jobs</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">int, default=1</span><dd>The number of jobs to run in parallel</dd>
+<dt>iid</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True</span><dd>If True, the data is assumed to be identically distributed across
+the folds, and the loss minimized is the total loss per sample, 
+and not the mean loss across the folds.</dd>
+<dt>cv</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">int, default=5</span><dd>The number of cross-validation folds to generate for testing each
+set of parameters</dd>
+<dt>getResults</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span><dd>If True, a pandas dataframe containing the results of the grid 
+search will be returned</dd>
+</dl>
+<dl class="docutils">
+<dt>gridsearch_results</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe</span><dd>The pandas dataframe containing the grid-search results.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.models_classification.gradient_boosting_machine.recursive_feature_elimination">
+<code class="descname">recursive_feature_elimination</code><span class="sig-paren">(</span><em>nfeat=None</em>, <em>step=1</em>, <em>inplace=False</em><span class="sig-paren">)</span><a class="headerlink" href="#easyML.models_classification.gradient_boosting_machine.recursive_feature_elimination" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to implement recursive feature elimination on the model.
+Note that CV is not performed in this function. The method will 
+continue to eliminate some features (specified by step parameter)
+at each step until the specified number of features are reached.</p>
+<dl class="docutils">
+<dt>nfeat</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">int or None, default=None</span><dd>The num of top features to select. If None, half of the features 
+are selected.</dd>
+<dt>step</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">int or float, default=1</span><dd>If int, then step corresponds to the number of features to remove
+at each iteration. 
+If float and within (0.0, 1.0), then step corresponds to the 
+percentage (rounded down) of features to remove at each 
+iteration.
+If float and greater than one, then integral part will be
+considered as an integer input</dd>
+<dt>inplace</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span><dd>If True, the predictors of the class are modified to those 
+selected by the RFE procedure.</dd>
+</dl>
+<p>selected : A series object containing the selected features as 
+index and their rank in selection as values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.models_classification.gradient_boosting_machine.recursive_feature_elimination_cv">
+<code class="descname">recursive_feature_elimination_cv</code><span class="sig-paren">(</span><em>step=1</em>, <em>inplace=False</em><span class="sig-paren">)</span><a class="headerlink" href="#easyML.models_classification.gradient_boosting_machine.recursive_feature_elimination_cv" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to implement recursive feature elimination on the model 
+with cross-validation(CV). At each step, features are ranked as per 
+the algorithm used and lowest ranked features are removed,
+as specified by the step argument. At each step, the CV score is 
+determined using the scoring metric specified in the model. The set 
+of features with highest cross validation scores is then chosen.</p>
+<dl class="docutils">
+<dt>step</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">int or float, default=1</span><dd>If int, then step corresponds to the number of features to remove
+at each iteration. 
+If float and within (0.0, 1.0), then step corresponds to the 
+percentage (rounded down) of features to remove at each 
+iteration.
+If float and greater than one, then integral part will be
+considered as an integer input</dd>
+<dt>inplace</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span><dd>If True, the predictors of the class are modified to those 
+selected by the RFECV procedure.</dd>
+</dl>
+<dl class="docutils">
+<dt>selected</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">pandas series</span><dd>A series object containing the selected features as 
+index and their rank in selection as values</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.models_classification.gradient_boosting_machine.set_parameters">
+<code class="descname">set_parameters</code><span class="sig-paren">(</span><em>param=None</em>, <em>cv_folds=None</em>, <em>set_default=False</em><span class="sig-paren">)</span><a class="headerlink" href="#easyML.models_classification.gradient_boosting_machine.set_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the parameters of the model. Only the parameters to be
+updated are required to be passed.</p>
+<dl class="docutils">
+<dt>param</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">dict, default None</span><dd>A dictionary of key,value pairs where the keys are the parameters
+to be updated and values as the new value of those parameters.
+If None, no update performed
+Ignored if set_default iss True.</dd>
+<dt>cv_folds</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">int, default None</span><dd>Pass the number of CV folds to be used in the model.
+If None, no update performed.</dd>
+<dt>set_default</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default True</span><dd>if True, the model will be set to default parameters as defined 
+in model definition by scikit-learn. Note that this will not 
+affect the cv_folds parameter.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.models_classification.gradient_boosting_machine.set_predictors">
+<code class="descname">set_predictors</code><span class="sig-paren">(</span><em>predictors</em><span class="sig-paren">)</span><a class="headerlink" href="#easyML.models_classification.gradient_boosting_machine.set_predictors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the columns to be used predictors (also called independent 
+variables or features) of the model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>predictors</strong> : list of strings</p>
+<blockquote class="last">
+<div><p>A list of columns which are to be used as predictors (also 
+called independent variables or features).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.models_classification.gradient_boosting_machine.set_scoring_metric">
+<code class="descname">set_scoring_metric</code><span class="sig-paren">(</span><em>scoring_metric</em>, <em>additional_display_metrics=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#easyML.models_classification.gradient_boosting_machine.set_scoring_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to update the metric to be used for scoring the 
+models and some additional metric just for reference if required.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>scoring_metric</strong> : str</p>
+<blockquote>
+<div><p>This is same as in model class.</p>
+</div></blockquote>
+<p><strong>additional_display_metrics</strong> : list of str</p>
+<blockquote class="last">
+<div><p>This is same as in model class.
+If nothing specified, then the original values will not be
+modified</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.models_classification.gradient_boosting_machine.submission">
+<code class="descname">submission</code><span class="sig-paren">(</span><em>IDcol</em>, <em>filename='submission.csv'</em><span class="sig-paren">)</span><a class="headerlink" href="#easyML.models_classification.gradient_boosting_machine.submission" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method creates a submission file (mostly used for online 
+hackathons) with the prediction classes.</p>
+<dl class="docutils">
+<dt>IDcol</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str or list of str</span><dd>The column names to be present in the exported file apart from
+the prediction columns. They generally represent the unique IDs
+of each observation or row.</dd>
+<dt>filename</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8221;submission.csv&#8221;</span><dd>The name of the file, along with the path, which will contain
+the submission results. The exported file will have the columns
+mentioned in the IDcol parameter along with column representing
+the predicted class.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.models_classification.gradient_boosting_machine.submission_proba">
+<code class="descname">submission_proba</code><span class="sig-paren">(</span><em>IDcol</em>, <em>proba_colnames</em>, <em>filename=u'Submission.csv'</em><span class="sig-paren">)</span><a class="headerlink" href="#easyML.models_classification.gradient_boosting_machine.submission_proba" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="linear_svm.html" class="btn btn-neutral float-right" title="Linear Support Vector Machine (Classifier)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="adaboost.html" class="btn btn-neutral" title="Adaboost (Classifier)" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Aarshay Jain.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1.0al',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

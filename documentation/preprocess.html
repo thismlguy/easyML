@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Pre-Processing Module &mdash; easyML 0.1.0al documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="easyML 0.1.0al documentation" href="index.html"/>
+        <link rel="up" title="API Documentation" href="api.html"/>
+        <link rel="next" title="Feature Engineering Module" href="feature_engineering.html"/>
+        <link rel="prev" title="DataBlock Module" href="datablock.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> easyML
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="datablock.html">DataBlock Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Pre-Processing Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#upcoming-features">Upcoming Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class-structure">Class Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="feature_engineering.html">Feature Engineering Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classification.html">Classification Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#notes">Notes</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">easyML</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="api.html">API Documentation</a> &raquo;</li>
+      
+    <li>Pre-Processing Module</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/preprocess.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pre-processing-module">
+<h1>Pre-Processing Module<a class="headerlink" href="#pre-processing-module" title="Permalink to this headline">¶</a></h1>
+<p>The preprocess module is designed to help you perform some basic checks like missing values. It also helps you clearn your data for analysis by providing easy-to-use functions for imputation, scaling data and normalizing the data. It also has a generic apply function to help you</p>
+<div class="section" id="upcoming-features">
+<h2>Upcoming Features<a class="headerlink" href="#upcoming-features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Check near-zero variance</li>
+<li>Check duplicates</li>
+<li>Check data types</li>
+<li>Check multi-colinraity</li>
+<li>Split data train-test</li>
+<li>Sense check on data</li>
+<li>Text processing</li>
+</ul>
+</div>
+<div class="section" id="class-structure">
+<h2>Class Structure<a class="headerlink" href="#class-structure" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="class">
+<dt id="easyML.preprocess.PreProcess">
+<em class="property">class </em><code class="descclassname">easyML.preprocess.</code><code class="descname">PreProcess</code><span class="sig-paren">(</span><em>data_block</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/preprocess.html#PreProcess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.preprocess.PreProcess" title="Permalink to this definition">¶</a></dt>
+<dd><p>A preprocessing modules which helps you preprocess you data
+using the easy-to-use built-in modules. The preprocessing is 
+done on all 3 of the dataframes in datablock simultaneously.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_block</strong> : object of type DataBlock</p>
+<blockquote class="last">
+<div><p>An object of easyML&#8217;s DataBlock class. You should first create an 
+object of that class and then pass it as a parameter.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>datablock</td>
+<td>(object of type DataBlock) The pre-processed data containing all the modifications made using the module&#8217;s methods</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="easyML.preprocess.PreProcess.check_missing">
+<code class="descname">check_missing</code><span class="sig-paren">(</span><em>subset=None</em>, <em>printResult=True</em>, <em>returnSeries=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/preprocess.html#PreProcess.check_missing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.preprocess.PreProcess.check_missing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the missing values in the all dataframes. 
+The target column in the predict variable will not be 
+checked here because it is assumed to have all missing values.</p>
+<dl class="docutils">
+<dt>subset</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list of str or None, default=None</span><dd>A list specifying the subset of columns in which the missing
+values are to be checked.
+If None, all columns checked</dd>
+<dt>printResult</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>if True, the result will be printed</dd>
+<dt>returnSeries</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False </span><dd>if True, the function will return a tuple of 3 objects each one 
+being a pandas Series with index as the column name and value as 
+the number of missing values in the column</dd>
+</dl>
+<dl class="docutils">
+<dt>missing_values</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">tuple with 3 elements</span><dd>Returns a tuple of 3 pandas series objects pertaining to the 
+train, test and predict dataframes. Each series has index as the
+name of the columns having missing values and values as the
+number of missing values in the column.
+Returns (None,None,None) if no missing values found.
+Nothing is returned is returnSeries argument is False</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.preprocess.PreProcess.imputation">
+<code class="descname">imputation</code><span class="sig-paren">(</span><em>column</em>, <em>metric=None</em>, <em>groupby=None</em>, <em>constant=None</em>, <em>inplace=True</em>, <em>suffix=u'_imputed'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/preprocess.html#PreProcess.imputation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.preprocess.PreProcess.imputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to performs imputation on a column. The imputation is 
+performed on all dataframes together. For instance, if a median imputation is performed, then median of the train dataframe is 
+determined and the same value used to impute the test and predict
+dataframes as well.</p>
+<dl class="docutils">
+<dt>column</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str</span><dd>The name of the column to be imputed.</dd>
+<dt>metric</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str or None, default=None </span><dd>The metric to be used for imputation. Possible options:
+- mean: impute with column mean (only for numeric columns)
+- median: impute with column median; default for numeric data 
+(only for numeric columns) 
+- mode: impute with column model default for non-numeric data 
+(only for non-numeric columns)</dd>
+<dt>groupby</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str or list of str or None, default=None </span><dd>The list of columns by which the metric is to be grouped for 
+imputation. Note that these columns should not have any misssing 
+values.</dd>
+<dt>constant</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">no constraint, default=None </span><dd>To be used if a constant user-defined value is to be used for 
+imputation. This is ignored if metric is not None.</dd>
+<dt>inplace</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, then the original column in the data will be imputed. 
+If False, then a new column will be created with a suffix as 
+specified by suffix parameter. This can be used to test 
+different imputation metrics.</dd>
+<dt>suffix</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_imputed&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+the column name to creat a new column. 
+Note that if such a column already exists, it will be overwritten</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.preprocess.PreProcess.scale">
+<code class="descname">scale</code><span class="sig-paren">(</span><em>subset</em>, <em>scale_range=(0</em>, <em>1)</em>, <em>inplace=True</em>, <em>suffix=u'_scaled'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/preprocess.html#PreProcess.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.preprocess.PreProcess.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to scale the data within a fixed range of values.</p>
+<dl class="docutils">
+<dt>subset</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str or list of str</span><dd>This represents the columns to be scaled. 2 options:
+- str: a single column to be scaled
+- list of str: list of multiple columns to be scaled</dd>
+<dt>scale_range</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">tuple or dictionary, default=(0,1)</span><dd>This represents the range to which the data is to be scaled. 
+2 options:
+- tuple (min,mex): fixed range for all columns mentioned in subset
+- dictionary : a dictionary with keys as columns mentioned in 
+subset list and values as the range to which that column is to 
+be scaled. Note that this works only if subset is entered as a 
+list of strings</dd>
+<dt>inplace</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, the dataframes will be modified and columns scaled. 
+If False, new columns will be created with suffix as specified 
+in suffix parameter</dd>
+<dt>suffix</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_scaled&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+the column name to creat a new column. 
+Note that if such a column already exists, it will be overwritten</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.preprocess.PreProcess.normalize">
+<code class="descname">normalize</code><span class="sig-paren">(</span><em>subset</em>, <em>norm=u'l2'</em>, <em>inplace=True</em>, <em>suffix=u'_norm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/preprocess.html#PreProcess.normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.preprocess.PreProcess.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to normalize the data using an l1 or l2 normalization.</p>
+<dl class="docutils">
+<dt>subset</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list of str </span><dd>This represents the columns to be normalized. Input should be a 
+list of columns.</dd>
+<dt>norm</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str (&#8216;l1&#8217; or &#8216;l2&#8217;), default=&#8217;l2&#8217;</span><dd>This specifies the type or normalization- l1 or l2</dd>
+<dt>inplace</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, the dataframes will be modified and columns normalized. 
+If False, new columns will be created with suffix as specified 
+in suffix parameter</dd>
+<dt>suffix</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_norm&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+the column name to creat a new column. 
+Note that if such a column already exists, it will be overwritten</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.preprocess.PreProcess.apply">
+<code class="descname">apply</code><span class="sig-paren">(</span><em>column</em>, <em>func</em>, <em>rowwise=True</em>, <em>inplace=True</em>, <em>suffix=u'_modified'</em>, <em>combine_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/preprocess.html#PreProcess.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.preprocess.PreProcess.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to apply any function on the data to allow flexibility in 
+preprocessing part by incorporating functions not directly included 
+in this package. Note that your function should be able to handle 
+missing values in data if they exist.</p>
+<dl class="docutils">
+<dt>column</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str </span><dd>This represents the column on which the function is to be applied</dd>
+<dt>func</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">pre-defined function </span><dd>A function which can be of 2 types:
+1. Takes a single value as input and returns a single value. 
+This function will be applied to each observation independently 
+and applicable if rowwise=True
+2. Takes a list of numbers as input and returns a list of same 
+size. This will be applied to entire column at same time and 
+applicable if rowwise=False</dd>
+<dt>rowwise</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>if True, a function of type1 should be passed else function of 
+type2</dd>
+<dt>inplace</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, the dataframes will be modified. 
+If False, new columns will be created with suffix as specified 
+in suffix parameter</dd>
+<dt>suffix</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_modified&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+the column name to creat a new column. 
+Note that if such a column already exists, it will be overwritten</dd>
+<dt>combine_data</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span><dd>Works only in case of rowwise=False. If yes, the type 2 function 
+will be applied on the combined dataset together, ie. a vector 
+with observations of all the 3 datasets concatenated will be 
+passed to it and it should return a vector with numbers in the
+same order so that they can be mapped back.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="feature_engineering.html" class="btn btn-neutral float-right" title="Feature Engineering Module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="datablock.html" class="btn btn-neutral" title="DataBlock Module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Aarshay Jain.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0al',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

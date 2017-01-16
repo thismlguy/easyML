@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>easyML.genericmodelclass &mdash; easyML 0.1.0al documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="easyML 0.1.0al documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> easyML
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">easyML</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>easyML.genericmodelclass</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for easyML.genericmodelclass</h1><div class="highlight"><pre>
+<span></span><span class="c1">#####################################################################</span>
+<span class="c1">##### IMPORT STANDARD MODULES</span>
+<span class="c1">#####################################################################</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">KFold</span><span class="p">,</span> <span class="n">GridSearchCV</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">model_selection</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="k">import</span> <span class="n">RFE</span><span class="p">,</span> <span class="n">RFECV</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="kn">from</span> <span class="nn">.base_class</span> <span class="k">import</span> <span class="n">BaseClass</span>
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### GENERIC MODEL CLASS</span>
+<span class="c1">#####################################################################</span>
+
+<span class="k">class</span> <span class="nc">GenericModelClass</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; This class contains the generic classification functionms and variable definitions applicable across all models </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#Define as a meta class to disable direct instances</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+
+    <span class="c1">#Empty dictionary for default parameters to be updated in inhereted </span>
+    <span class="c1">#class:</span>
+    <span class="n">default_parameters</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alg</span><span class="p">,</span> <span class="n">data_block</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="p">[],</span><span class="n">cv_folds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">scoring_metric</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span><span class="n">additional_display_metrics</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">alg</span> <span class="o">=</span> <span class="n">alg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span> <span class="o">=</span> <span class="n">data_block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cv_folds</span> <span class="o">=</span> <span class="n">cv_folds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span> <span class="o">=</span> <span class="n">predictors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictions_class</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1">#define scoring metric:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring_metric</span> <span class="o">=</span> <span class="n">scoring_metric</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">additional_display_metrics</span><span class="o">=</span><span class="n">additional_display_metrics</span>
+
+        <span class="c1">#grid-search objects:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gridsearch_class</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gridsearch_result</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1">#not to be used for all but most</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1">#Modify and get predictors for the model:</span>
+    <span class="k">def</span> <span class="nf">set_predictors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictors</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the columns to be used predictors (also called independent </span>
+<span class="sd">        variables or features) of the model.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        predictors : list of strings</span>
+<span class="sd">            A list of columns which are to be used as predictors (also </span>
+<span class="sd">            called independent variables or features).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="o">=</span><span class="n">predictors</span>
+
+
+    <span class="k">def</span> <span class="nf">set_scoring_metric</span><span class="p">(</span><span class="n">scoring_metric</span><span class="p">,</span> <span class="n">additional_display_metrics</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot; A method to update the metric to be used for scoring the </span>
+<span class="sd">        models and some additional metric just for reference if required.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scoring_metric : str</span>
+<span class="sd">            This is same as in model class.</span>
+
+<span class="sd">        additional_display_metrics : list of str</span>
+<span class="sd">            This is same as in model class.</span>
+<span class="sd">            If nothing specified, then the original values will not be</span>
+<span class="sd">            modified</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring_metric</span> <span class="o">=</span> <span class="n">scoring_metric</span>
+        <span class="k">if</span> <span class="n">additional_display_metrics</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">additional_display_metrics</span> <span class="o">=</span> <span class="n">additional_display_metrics</span>
+
+
+    <span class="k">def</span> <span class="nf">KFold_CrossValidation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scoring_metric</span><span class="p">):</span>
+        <span class="c1"># Generate cross validation folds for the training dataset. </span>
+
+        <span class="n">error</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span>
+                <span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="p">,</span> 
+                <span class="n">X</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> 
+                <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> 
+                <span class="n">cv</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cv_folds</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring_metric</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span>
+                <span class="p">)</span> 
+            
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;mean_error&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
+            <span class="s1">&#39;std_error&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">error</span><span class="p">),</span>
+            <span class="s1">&#39;all_error&#39;</span><span class="p">:</span> <span class="n">error</span> 
+            <span class="p">}</span>
+
+    
+    <span class="k">def</span> <span class="nf">recursive_feature_elimination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nfeat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;A method to implement recursive feature elimination on the model.</span>
+<span class="sd">        Note that CV is not performed in this function. The method will </span>
+<span class="sd">        continue to eliminate some features (specified by step parameter)</span>
+<span class="sd">        at each step until the specified number of features are reached.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        nfeat : int or None, default=None</span>
+<span class="sd">            The num of top features to select. If None, half of the features </span>
+<span class="sd">            are selected.</span>
+
+<span class="sd">        step : int or float, default=1</span>
+<span class="sd">            If int, then step corresponds to the number of features to remove</span>
+<span class="sd">            at each iteration. </span>
+<span class="sd">            If float and within (0.0, 1.0), then step corresponds to the </span>
+<span class="sd">            percentage (rounded down) of features to remove at each </span>
+<span class="sd">            iteration.</span>
+<span class="sd">            If float and greater than one, then integral part will be</span>
+<span class="sd">            considered as an integer input</span>
+<span class="sd">            </span>
+<span class="sd">        inplace : bool, default=False</span>
+<span class="sd">            If True, the predictors of the class are modified to those </span>
+<span class="sd">            selected by the RFE procedure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        _______</span>
+<span class="sd">        selected : A series object containing the selected features as </span>
+<span class="sd">        index and their rank in selection as values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rfe</span> <span class="o">=</span> <span class="n">RFE</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="p">,</span> <span class="n">n_features_to_select</span><span class="o">=</span><span class="n">nfeat</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
+        
+        <span class="n">rfe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">],</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
+                <span class="p">)</span>
+        
+        <span class="n">ranks</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">rfe</span><span class="o">.</span><span class="n">ranking_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">)</span>
+        
+        <span class="n">selected</span> <span class="o">=</span> <span class="n">ranks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rfe</span><span class="o">.</span><span class="n">support_</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_predictors</span><span class="p">(</span><span class="n">selected</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        
+        <span class="k">return</span> <span class="n">selected</span>
+
+    
+    <span class="k">def</span> <span class="nf">recursive_feature_elimination_cv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A method to implement recursive feature elimination on the model </span>
+<span class="sd">        with cross-validation(CV). At each step, features are ranked as per </span>
+<span class="sd">        the algorithm used and lowest ranked features are removed,</span>
+<span class="sd">        as specified by the step argument. At each step, the CV score is </span>
+<span class="sd">        determined using the scoring metric specified in the model. The set </span>
+<span class="sd">        of features with highest cross validation scores is then chosen. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        step : int or float, default=1</span>
+<span class="sd">            If int, then step corresponds to the number of features to remove</span>
+<span class="sd">            at each iteration. </span>
+<span class="sd">            If float and within (0.0, 1.0), then step corresponds to the </span>
+<span class="sd">            percentage (rounded down) of features to remove at each </span>
+<span class="sd">            iteration.</span>
+<span class="sd">            If float and greater than one, then integral part will be</span>
+<span class="sd">            considered as an integer input</span>
+<span class="sd">            </span>
+<span class="sd">        inplace : bool, default=False</span>
+<span class="sd">            If True, the predictors of the class are modified to those </span>
+<span class="sd">            selected by the RFECV procedure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        _______</span>
+<span class="sd">        selected : pandas series</span>
+<span class="sd">            A series object containing the selected features as </span>
+<span class="sd">            index and their rank in selection as values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rfecv</span> <span class="o">=</span> <span class="n">RFECV</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span><span class="n">cv</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cv_folds</span><span class="p">,</span>
+                <span class="n">scoring</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring_metric</span><span class="p">,</span><span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span>
+                <span class="p">)</span>
+        
+        <span class="n">rfecv</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">],</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">step</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">min_nfeat</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">)</span> 
+                        <span class="o">-</span> <span class="n">step</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rfecv</span><span class="o">.</span><span class="n">grid_scores_</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Number of features selected&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Cross validation score&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                    <span class="nb">range</span><span class="p">(</span><span class="n">min_nfeat</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="p">),</span> 
+                    <span class="n">rfecv</span><span class="o">.</span><span class="n">grid_scores_</span>
+                    <span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">ranks</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">rfecv</span><span class="o">.</span><span class="n">ranking_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">)</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="n">ranks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rfecv</span><span class="o">.</span><span class="n">support_</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_predictors</span><span class="p">(</span><span class="n">selected</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">ranks</span>
+
+    
+    <span class="k">def</span> <span class="nf">grid_search</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">iid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">getResults</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A method to perform GridSearch with cross-validation (CV) to find</span>
+<span class="sd">        the optimum parameters for the model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        param_grid : dict </span>
+<span class="sd">            A dictionary with parameters names (string) as keys and lists of</span>
+<span class="sd">            parameter settings to try as values.</span>
+<span class="sd">            Example: for a decision tree, {&#39;max_depth&#39;:[3,4,5],</span>
+<span class="sd">            &#39;min_samples_split&#39;:[30,50,100]} will check all the 9 possible </span>
+<span class="sd">            combinations of parameters </span>
+
+<span class="sd">        n_jobs : int, default=1</span>
+<span class="sd">            The number of jobs to run in parallel</span>
+
+<span class="sd">        iid : bool, default=True</span>
+<span class="sd">            If True, the data is assumed to be identically distributed across</span>
+<span class="sd">            the folds, and the loss minimized is the total loss per sample, </span>
+<span class="sd">            and not the mean loss across the folds.</span>
+
+<span class="sd">        cv : int, default=5</span>
+<span class="sd">            The number of cross-validation folds to generate for testing each</span>
+<span class="sd">            set of parameters</span>
+
+<span class="sd">        getResults : bool, default=False</span>
+<span class="sd">            If True, a pandas dataframe containing the results of the grid </span>
+<span class="sd">            search will be returned</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        _______</span>
+<span class="sd">        gridsearch_results : pandas dataframe</span>
+<span class="sd">            The pandas dataframe containing the grid-search results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gridsearch_class</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">param_grid</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring_metric</span><span class="p">,</span>
+                <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">iid</span><span class="o">=</span><span class="n">iid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gridsearch_class</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">],</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gridsearch_result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">gridsearch_class</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Grid Search Results:&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gridsearch_result</span><span class="p">[</span>
+            <span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">,</span><span class="s1">&#39;mean_test_score&#39;</span><span class="p">,</span><span class="s1">&#39;std_test_score&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;mean_train_score&#39;</span><span class="p">,</span><span class="s1">&#39;std_train_score&#39;</span><span class="p">]</span>
+            <span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Best Parameters: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gridsearch_class</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Best Score: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gridsearch_class</span><span class="o">.</span><span class="n">best_score_</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">getResults</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gridsearch_result</span>
+
+    
+    <span class="k">def</span> <span class="nf">submission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDcol</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;submission.csv&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This method creates a submission file (mostly used for online </span>
+<span class="sd">        hackathons) with the prediction classes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        IDcol : str or list of str</span>
+<span class="sd">            The column names to be present in the exported file apart from</span>
+<span class="sd">            the prediction columns. They generally represent the unique IDs</span>
+<span class="sd">            of each observation or row.</span>
+
+<span class="sd">        filename : str, default=&quot;submission.csv&quot;</span>
+<span class="sd">            The name of the file, along with the path, which will contain</span>
+<span class="sd">            the submission results. The exported file will have the columns</span>
+<span class="sd">            mentioned in the IDcol parameter along with column representing</span>
+<span class="sd">            the predicted class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">IDcol</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+            <span class="n">IDcol</span> <span class="o">=</span> <span class="p">[</span><span class="n">IDcol</span><span class="p">]</span>
+        <span class="n">submission</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">test</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">IDcol</span> <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="c1">#The output is typecasted to integer specifically so that the csv</span>
+        <span class="c1"># file doesn&#39;t read the format wrong</span>
+        <span class="n">submission</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> \
+                                <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s1">&#39;predict&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">submission</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">create_ensemble_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#checks whether the ensemble directory exists and creates one if </span>
+        <span class="c1">#it doesn&#39;t</span>
+        <span class="n">ensdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">ensdir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">ensdir</span><span class="p">)</span>
+
+    <span class="c1"># Define abstract classes which the classes which inheret this will implement:</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span> 
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fit_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span> 
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">export_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span> 
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Aarshay Jain.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1.0al',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

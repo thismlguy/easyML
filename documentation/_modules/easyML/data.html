@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>easyML.data &mdash; easyML 0.1.0al documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="easyML 0.1.0al documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> easyML
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">easyML</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>easyML.data</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for easyML.data</h1><div class="highlight"><pre>
+<span></span><span class="c1">#####################################################################</span>
+<span class="c1">##### IMPORT STANDARD MODULES</span>
+<span class="c1">#####################################################################</span>
+
+<span class="c1">#Python 3 support:</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="c1"># %matplotlib inline    #only valid for iPython notebook</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>     <span class="c1">#to maintain dp as an ordered dictionary</span>
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### DEFINE DATA_BLOCK CLASS</span>
+<span class="c1">#####################################################################</span>
+
+<div class="viewcode-block" id="DataBlock"><a class="viewcode-back" href="../../datablock.html#easyML.data.DataBlock">[docs]</a><span class="k">class</span> <span class="nc">DataBlock</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Define the data block which contains the entire set of data. </span>
+<span class="sd">    This is a unique data structure which will be passed as input to </span>
+<span class="sd">    the other classes of this module. This helps in packaging all the</span>
+<span class="sd">    data together so that every action is performed on all the dataframes</span>
+<span class="sd">    together, thus reducing the coding overheads significantly.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    __________</span>
+<span class="sd">    train : pandas dataframe </span>
+<span class="sd">        The training data, which is used to train the model.</span>
+<span class="sd">        This data should have both the predictors, i.e. independent data</span>
+<span class="sd">        and the target, i.e. dependent data</span>
+<span class="sd">        This data has to be provided.</span>
+
+<span class="sd">    test : pandas dataframe or None</span>
+<span class="sd">        The testing data.</span>
+<span class="sd">        This data should have both the predictors, i.e. independent data</span>
+<span class="sd">        and the target, i.e. dependent data.</span>
+<span class="sd">        This is typically used to evaluate models. This is generally used if</span>
+<span class="sd">        a lot of data is available and it is feasible to split it into train</span>
+<span class="sd">        or test. Otherwise, cross-validation is performed on training data</span>
+<span class="sd">        and there is no explicit test data.</span>
+<span class="sd">        Pass None to the argument if data is not available.</span>
+<span class="sd">    </span>
+<span class="sd">    predict : pandas dataframe</span>
+<span class="sd">        The data with unknown labels or targets, which are to be predicted. </span>
+<span class="sd">        This is generally available in online hackathons where it is called</span>
+<span class="sd">        as a test set because true labels are available with the organizers </span>
+<span class="sd">        which are used to evaluate the model. But for the purpose of this </span>
+<span class="sd">        module, any data without known targets should be passed into predict</span>
+<span class="sd">        dataframe because we will make these predictions and export the </span>
+<span class="sd">        results.</span>
+<span class="sd">        Pass None to the argument if data is not available.</span>
+
+<span class="sd">        Note that a target column with all None values will be added to this</span>
+<span class="sd">        dataframe by the module to allow integration with other datasets. If </span>
+<span class="sd">        such a column already exists, then its values will be made None.</span>
+<span class="sd">    </span>
+<span class="sd">    target : str </span>
+<span class="sd">        The name of the variable representing the values to be predicted</span>
+
+<span class="sd">    ID : str or list of str or None, default None</span>
+<span class="sd">        The name of the variavle(s) which individually/together form a </span>
+<span class="sd">        unique entity for each observation. </span>
+<span class="sd">        This can be left empty at the time of initialization but will inhibit</span>
+<span class="sd">        the functioning of certain methods in the module related to </span>
+<span class="sd">        exporting data.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    __________</span>
+<span class="sd">    train : pandas dataframe </span>
+<span class="sd">        Same as passed values. Provided so that separate copies of data are </span>
+<span class="sd">        not requried.</span>
+
+<span class="sd">    test : pandas dataframe </span>
+<span class="sd">        Same as passed values. Provided so that separate copies of data are </span>
+<span class="sd">        not requried.</span>
+
+<span class="sd">    predict : pandas dataframe </span>
+<span class="sd">        Same as passed values. Provided so that separate copies of data are </span>
+<span class="sd">        not requried.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">predict</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train</span> <span class="o">=</span> <span class="n">train</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test</span> <span class="o">=</span> <span class="n">test</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predict</span> <span class="o">=</span> <span class="n">predict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
+    
+        <span class="c1">#check data and initialize columns:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">()</span>
+
+        <span class="c1">#get columns:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_column_list</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">update_column_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numeric_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">_get_numeric_data</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numeric_columns</span><span class="p">)))</span>        
+
+    <span class="k">class</span> <span class="nc">InvalidDataBlock</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="c1">#&quot;&quot;&quot; Raise Exception when the data passed to the datablock is not valid &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">check_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#Check if train and test have same columns:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">InvalidDataBlock</span><span class="p">(</span><span class="s2">&quot;The train and test dataframe should have the equal number of columns with the same names&quot;</span><span class="p">)</span>
+
+        <span class="c1">#Check if predict has a subset of columns from train and everything </span>
+        <span class="c1">#except target:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#Make target column in predict to None or add it not there</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">InvalidDataBlock</span><span class="p">(</span><span class="s2">&quot;The predict dataframe should contain same columns as train with/without the target column&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DataBlock.data_present"><a class="viewcode-back" href="../../datablock.html#easyML.data.DataBlock.data_present">[docs]</a>    <span class="k">def</span> <span class="nf">data_present</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a dictionary with key as the name of the data (train/test/</span>
+<span class="sd">        predict) and value has the actual data. </span>
+<span class="sd">        Only the dataframe available are returned</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        __________</span>
+<span class="sd">        dictionary : dict</span>
+<span class="sd">            A dictionary with key as the name of the data (train/test/</span>
+<span class="sd">            predict) and value has the actual data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dfs</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">({</span><span class="s1">&#39;train&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">})</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">test</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;predict&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span>
+        <span class="k">return</span> <span class="n">dfs</span></div>
+
+<div class="viewcode-block" id="DataBlock.combined_data"><a class="viewcode-back" href="../../datablock.html#easyML.data.DataBlock.combined_data">[docs]</a>    <span class="k">def</span> <span class="nf">combined_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addSource</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a dataframe with all dataframes combined into one.</span>
+<span class="sd">        Only the dataframe available are returned.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        addSource : bool, default=False</span>
+<span class="sd">            if True, a column names &#39;source&#39; will be added containing the</span>
+<span class="sd">            name of the data (train/test/predict) to which the particular</span>
+<span class="sd">            observation belongs.</span>
+<span class="sd">            Note: if a column named source already exists, it will be </span>
+<span class="sd">            overwritten.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        __________</span>
+<span class="sd">        df : pandas dataframe</span>
+<span class="sd">            A combined dataframe containg observation from all dataframes </span>
+<span class="sd">            in the datablock.</span>
+<span class="sd">            Note that the values of the target variable for predict dataframe</span>
+<span class="sd">            will be None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_present</span><span class="p">(),</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">addSource</span><span class="p">:</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_present</span><span class="p">():</span>
+                <span class="n">source</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">key</span><span class="p">]</span><span class="o">*</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">new_df</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span>
+            
+        <span class="k">return</span> <span class="n">new_df</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Aarshay Jain.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1.0al',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

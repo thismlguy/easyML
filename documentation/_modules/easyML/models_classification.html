@@ -1,0 +1,1648 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>easyML.models_classification &mdash; easyML 0.1.0al documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="easyML 0.1.0al documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> easyML
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">easyML</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>easyML.models_classification</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for easyML.models_classification</h1><div class="highlight"><pre>
+<span></span><span class="c1">#####################################################################</span>
+<span class="c1">##### IMPORT STANDARD MODULES</span>
+<span class="c1">#####################################################################</span>
+
+<span class="c1">#Python 3 support:</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="c1"># import pydot</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">scipy.stats.mstats</span> <span class="k">import</span> <span class="n">chisquare</span><span class="p">,</span> <span class="n">mode</span>
+    
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">KFold</span><span class="p">,</span> <span class="n">GridSearchCV</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">RandomForestClassifier</span><span class="p">,</span> <span class="n">ExtraTreesClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">AdaBoostClassifier</span><span class="p">,</span> <span class="n">GradientBoostingClassifier</span> 
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="k">import</span> <span class="n">SVC</span>
+<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="k">import</span> <span class="n">DecisionTreeClassifier</span><span class="p">,</span> <span class="n">export_graphviz</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">model_selection</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="k">import</span> <span class="n">RFE</span><span class="p">,</span> <span class="n">RFECV</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="c1"># from StringIO import StringIO</span>
+<span class="c1"># import xgboost as xgb</span>
+<span class="c1"># from xgboost.sklearn import XGBClassifier</span>
+
+<span class="kn">from</span> <span class="nn">.genericmodelclass</span> <span class="k">import</span> <span class="n">GenericModelClass</span>
+<span class="kn">from</span> <span class="nn">.data</span> <span class="k">import</span> <span class="n">DataBlock</span>
+
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### GENERIC MODEL CLASS</span>
+<span class="c1">#####################################################################</span>
+
+<span class="k">class</span> <span class="nc">base_classification</span><span class="p">(</span><span class="n">GenericModelClass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A base class which defines the generic classification functions </span>
+<span class="sd">    and variable definitions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    alg : object</span>
+<span class="sd">        An sklearn-style estimator</span>
+
+<span class="sd">    data_block : object</span>
+<span class="sd">        An object of easyML&#39;s DataBlock class. You should first create an </span>
+<span class="sd">        object of that class and then pass it as a parameter.</span>
+
+<span class="sd">    predictors : list of strings, default []</span>
+<span class="sd">        A list of columns which are to be used as predictors (also called </span>
+<span class="sd">        independent variables or features).</span>
+<span class="sd">        The default value is an empty list because these need not always be</span>
+<span class="sd">        defined at the time of class initialization. The set_predictors </span>
+<span class="sd">        method can be used later but before creating any predictive model.</span>
+
+<span class="sd">    cv_folds : int, default 5</span>
+<span class="sd">        The number of folds to be created while performing CV.</span>
+<span class="sd">        This parameter can be adjusted later by passing using the </span>
+<span class="sd">        set_parameters method</span>
+
+<span class="sd">    scoring_metric : str, default &#39;accuracy&#39;</span>
+<span class="sd">        The scoring metric to be used for evaluating the model across the</span>
+<span class="sd">        different functions available. The available options are </span>
+<span class="sd">        - &#39;accuracy&#39;</span>
+<span class="sd">        - &#39;auc&#39;</span>
+<span class="sd">        - &#39;log_loss&#39;</span>
+<span class="sd">        - &#39;f1&#39;</span>
+<span class="sd">        - &#39;average_precision&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    additional_display_metrics : list of string, default []</span>
+<span class="sd">        A list of additional display metrics to be shown for the test and</span>
+<span class="sd">        train dataframes in data_block. Note:</span>
+<span class="sd">        - These will be just shown for user reference and not actually used </span>
+<span class="sd">        for model evaluation</span>
+<span class="sd">        - The same available options as scoring_metric apply</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#Define as a meta class to disable direct instances</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+
+    <span class="c1"># Map possible inputs to functions in sklean.metrics. </span>
+    <span class="c1"># Each value of the dictionary is a tuple of 3:</span>
+    <span class="c1"># (function, multi-class support, requires-probabilities)</span>
+        <span class="c1"># function: the sklearn metrics function</span>
+        <span class="c1"># multi-class support: if True, function allows multi-class support</span>
+        <span class="c1"># requires-probabilities: if True, the function requires </span>
+        <span class="c1"># probabilities to be passed as arguments</span>
+    <span class="n">metrics_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;accuracy&#39;</span><span class="p">:(</span><span class="n">metrics</span><span class="o">.</span><span class="n">accuracy_score</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s1">&#39;auc&#39;</span><span class="p">:(</span><span class="n">metrics</span><span class="o">.</span><span class="n">roc_auc_score</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">True</span><span class="p">),</span>
+        <span class="s1">&#39;log_loss&#39;</span><span class="p">:(</span><span class="n">metrics</span><span class="o">.</span><span class="n">log_loss</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span><span class="kc">True</span><span class="p">),</span>
+        <span class="s1">&#39;f1&#39;</span><span class="p">:(</span><span class="n">metrics</span><span class="o">.</span><span class="n">f1_score</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span><span class="kc">False</span><span class="p">),</span>
+        <span class="s1">&#39;average_precision&#39;</span><span class="p">:(</span><span class="n">metrics</span><span class="o">.</span><span class="n">average_precision_score</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">alg</span><span class="p">,</span> <span class="n">data_block</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="p">[],</span><span class="n">cv_folds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">scoring_metric</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span><span class="n">additional_display_metrics</span><span class="o">=</span><span class="p">[]</span>
+        <span class="p">):</span>
+
+        <span class="n">GenericModelClass</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">alg</span><span class="o">=</span><span class="n">alg</span><span class="p">,</span> <span class="n">data_block</span><span class="o">=</span><span class="n">data_block</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="n">predictors</span><span class="p">,</span>
+            <span class="n">cv_folds</span><span class="o">=</span><span class="n">cv_folds</span><span class="p">,</span><span class="n">scoring_metric</span><span class="o">=</span><span class="n">scoring_metric</span><span class="p">,</span>
+            <span class="n">additional_display_metrics</span><span class="o">=</span><span class="n">additional_display_metrics</span><span class="p">)</span>
+
+        <span class="c1">#Run input datatype checks:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">data_block</span><span class="p">,</span><span class="s1">&#39;data_block&#39;</span><span class="p">,</span><span class="n">DataBlock</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subset_check</span><span class="p">(</span><span class="n">predictors</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">cv_folds</span><span class="p">,</span><span class="s1">&#39;cv_folds&#39;</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">scoring_metric</span><span class="p">,</span><span class="s1">&#39;scoring_metric&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span>
+            <span class="n">additional_display_metrics</span><span class="p">,</span><span class="s1">&#39;additional_display_metrics&#39;</span><span class="p">,</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="c1">#Store predicted probabilities in a dictionary with keys as the</span>
+        <span class="c1"># name of the dataset (train/test/predict) and values as the actual</span>
+        <span class="c1"># predictions.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictions_probabilities</span> <span class="o">=</span> <span class="p">{}</span>  
+
+        <span class="c1">#Boolean to store whether the estimator chosen allows probability</span>
+        <span class="c1"># predictions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">probabilities_available</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1">#Define number of classes in target.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_target_class</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+
+        <span class="c1">#A Series object to store generic classification model outcomes. </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ModelID&#39;</span><span class="p">,</span><span class="s1">&#39;CVScore_mean&#39;</span><span class="p">,</span><span class="s1">&#39;CVScore_std&#39;</span><span class="p">,</span><span class="s1">&#39;AUC&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;ActualScore (manual entry)&#39;</span><span class="p">,</span><span class="s1">&#39;CVMethod&#39;</span><span class="p">,</span><span class="s1">&#39;Predictors&#39;</span><span class="p">]</span>
+                <span class="p">)</span>
+
+        <span class="c1">#Get the dictionary of available dataframes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">data_present</span><span class="p">()</span>
+
+        <span class="c1">#Check all the entered metrics. Note that this check has to be</span>
+        <span class="c1">#placed after declaration of num_target_class attribute</span>
+        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><span class="n">scoring_metric</span><span class="p">]</span><span class="o">+</span><span class="n">additional_display_metrics</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_metric</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">num_target_class</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">check_metric</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="n">metric</span><span class="p">,</span><span class="n">num_target_class</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">metric</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">metrics_map</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="s2">&quot;The input &#39;</span><span class="si">%s</span><span class="s2">&#39; is not a valid scoring metric for this module&quot;</span><span class="o">%</span><span class="n">metric</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">num_target_class</span><span class="o">&gt;</span><span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">cls</span><span class="o">.</span><span class="n">metrics_map</span><span class="p">[</span><span class="n">metric</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="s2">&quot;The </span><span class="si">%s</span><span class="s2"> metric does not support multi-class classification case&quot;</span><span class="o">%</span><span class="n">metric</span><span class="p">)</span>
+
+    
+    <span class="k">def</span> <span class="nf">fit_model</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">performCV</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">printResults</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">printTopN</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">printConfusionMatrix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">printModelParameters</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;An advanced model fit function which fits the model on the </span>
+<span class="sd">        training data and performs cross-validation. It prints a model</span>
+<span class="sd">        report containing the following:</span>
+<span class="sd">        - The parameters being used to fit the model</span>
+<span class="sd">        - Confusion matrix for the train and test data</span>
+<span class="sd">        - Scoring metrics for the train and test data</span>
+<span class="sd">        - CV mean and std scores for scoring metric</span>
+<span class="sd">        - Additional scoring metrics on train and test data, if specified</span>
+
+<span class="sd">        Note that you can decide which details are to be printed using method</span>
+<span class="sd">        arguments.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        performCV : bool, default True</span>
+<span class="sd">            if True, the model performs cross-validation using the number of</span>
+<span class="sd">            folds as the cv_folds parameter of the model</span>
+
+<span class="sd">        printResults : bool, default True</span>
+<span class="sd">            if True, prints the report of the model. This should be kept as </span>
+<span class="sd">            True unless the module being used in a background script</span>
+
+<span class="sd">        printTopN : int, default None</span>
+<span class="sd">            The number of top scored features to be displayed in the feature </span>
+<span class="sd">            importance or coefficient plot of the model. If None, all the </span>
+<span class="sd">            features will be displayed by default. Note:</span>
+<span class="sd">            - For algorithms supporting real coefficient, the features will </span>
+<span class="sd">            be sorted by their magnitudes (absolute values).</span>
+<span class="sd">            - For algorithms supporting positive feature importance scores, </span>
+<span class="sd">            features are sorted on the score itself.</span>
+
+<span class="sd">            This will be ignored is printResults is False.</span>
+
+<span class="sd">        printConfusionMatrix : bool, default True</span>
+<span class="sd">            if True, the confusion matrix for the train and test dataframes </span>
+<span class="sd">            are printed, otherwise they are ommitted.</span>
+<span class="sd">            This will be ignored is printResults is False.</span>
+
+<span class="sd">        print</span>
+<span class="sd">        </span>
+<span class="sd">        printModelParameters : bool, default True</span>
+<span class="sd">            if True, the parameters being used to the run the model are </span>
+<span class="sd">            printed. It helps in validating the parameters and also makes</span>
+<span class="sd">            jupyter notebooks more informative if used</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">performCV</span><span class="p">,</span><span class="s1">&#39;performCV&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">printResults</span><span class="p">,</span><span class="s1">&#39;printResults&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">printConfusionMatrix</span><span class="p">,</span><span class="s1">&#39;printConfusionMatrix&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">printModelParameters</span><span class="p">,</span><span class="s1">&#39;printModelParameters&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">printTopN</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">printTopN</span><span class="p">,</span><span class="s1">&#39;printTopN&#39;</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span>
+          
+        <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">],</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span><span class="p">])</span>
+
+        <span class="c1">#Get algo_specific_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algo_specific_fit</span><span class="p">(</span><span class="n">printTopN</span><span class="p">)</span>
+          
+        <span class="c1">#Get predictions:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predictions_class</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
+                                                <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities_available</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">predictions_probabilities</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span>
+                                                    <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_model_characteristics</span><span class="p">(</span><span class="n">performCV</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">printResults</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printReport</span><span class="p">(</span><span class="n">printConfusionMatrix</span><span class="p">,</span> <span class="n">printModelParameters</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">calc_model_characteristics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">performCV</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># Determine key metrics to analyze the classification model. These </span>
+        <span class="c1"># are stored in the classification_output series object belonginf to </span>
+        <span class="c1"># this class.</span>
+        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring_metric</span><span class="p">]</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_display_metrics</span><span class="p">:</span>
+            <span class="c1">#Determine for both test and train, except predict:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span><span class="o">!=</span><span class="s1">&#39;predict&#39;</span><span class="p">:</span>  
+                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span><span class="n">key</span><span class="p">)</span>
+                    <span class="c1">#Case where probabilities to be passed as arguments</span>
+                    <span class="k">if</span> <span class="n">base_classification</span><span class="o">.</span><span class="n">metrics_map</span><span class="p">[</span><span class="n">metric</span><span class="p">][</span><span class="mi">2</span><span class="p">]:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> \
+                            <span class="n">base_classification</span><span class="o">.</span><span class="n">metrics_map</span><span class="p">[</span><span class="n">metric</span><span class="p">][</span><span class="mi">0</span><span class="p">](</span>
+                                <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span><span class="p">],</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">predictions_probabilities</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                    <span class="c1">#case where class predictions to be passed  as arguments</span>
+                    <span class="k">else</span><span class="p">:</span>                                                   
+                        <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> \
+                            <span class="n">base_classification</span><span class="o">.</span><span class="n">metrics_map</span><span class="p">[</span><span class="n">metric</span><span class="p">][</span><span class="mi">0</span><span class="p">](</span>
+                                <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span><span class="p">],</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">predictions_class</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+                <span class="c1">#Determine confusion matrix:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;ConfusionMatrix_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">key</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span>
+                        <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span><span class="p">],</span> 
+                        <span class="bp">self</span><span class="o">.</span><span class="n">predictions_class</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">performCV</span><span class="p">:</span>
+            <span class="n">cv_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">KFold_CrossValidation</span><span class="p">(</span>
+                        <span class="n">scoring_metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring_metric</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cv_score</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;mean_error&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> 
+                <span class="s1">&#39;std_error&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
+            <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="p">[</span><span class="s1">&#39;CVMethod&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                                        <span class="s1">&#39;KFold - &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cv_folds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="p">[</span><span class="s1">&#39;CVScore_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cv_score</span><span class="p">[</span><span class="s1">&#39;mean_error&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="p">[</span><span class="s1">&#39;CVScore_std&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cv_score</span><span class="p">[</span><span class="s1">&#39;std_error&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="p">[</span><span class="s1">&#39;Predictors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">)</span>
+
+    
+    <span class="k">def</span> <span class="nf">printReport</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">printConfusionMatrix</span><span class="p">,</span> <span class="n">printModelParameters</span><span class="p">):</span>
+        <span class="c1"># Print the metric determined in the previous function.</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Model Report&quot;</span><span class="p">)</span>
+        <span class="c1">#Outpute the parameters used for modeling</span>
+        <span class="k">if</span> <span class="n">printModelParameters</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Model being built with the following parameters:&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">get_params</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="n">printConfusionMatrix</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span><span class="o">!=</span><span class="s1">&#39;predict&#39;</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Confusion Matrix for </span><span class="si">%s</span><span class="s2"> data:&quot;</span><span class="o">%</span><span class="n">key</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span>
+                            <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span><span class="p">],</span> 
+                            <span class="bp">self</span><span class="o">.</span><span class="n">predictions_class</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                    <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Note: rows - actual; col - predicted&#39;</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Scoring Metric:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">!=</span><span class="s1">&#39;predict&#39;</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring_metric</span><span class="p">,</span><span class="n">key</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> 
+                    <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">scoring_metric</span><span class="p">,</span>
+                    <span class="n">key</span><span class="p">,</span>
+                    <span class="s2">&quot;</span><span class="si">{0:.3%}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">CV Score for Scoring Metric (</span><span class="si">%s</span><span class="s2">):&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring_metric</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Mean - </span><span class="si">%f</span><span class="s2"> | Std - </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="p">[</span><span class="s1">&#39;CVScore_mean&#39;</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="p">[</span><span class="s1">&#39;CVScore_std&#39;</span><span class="p">])</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">additional_display_metrics</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Additional Scoring Metrics:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">additional_display_metrics</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">key</span><span class="o">!=</span><span class="s1">&#39;predict&#39;</span><span class="p">:</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span><span class="n">key</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                            <span class="n">metric</span><span class="p">,</span>
+                            <span class="n">key</span><span class="p">,</span>
+                            <span class="s2">&quot;</span><span class="si">{0:.3%}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">plot_feature_importance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">printTopN</span><span class="p">):</span>
+        <span class="n">num_print</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">printTopN</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_print</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">printTopN</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">num_print</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Feature Importances&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Feature Importance Score&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">plot_abs_coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">coeff</span><span class="p">,</span><span class="n">printTopN</span><span class="p">):</span>
+        <span class="n">num_print</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">printTopN</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_print</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">printTopN</span><span class="p">,</span><span class="n">num_print</span><span class="p">)</span>
+
+        <span class="n">coeff_abs_sorted</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="nb">abs</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">coeff_abs</span><span class="p">[</span><span class="n">x</span><span class="p">]),</span>
+                <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+        
+        <span class="n">coeff</span><span class="p">[</span><span class="n">coeff_abs_sorted</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">num_print</span><span class="p">,]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                    <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> 
+                    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Feature Coefficients (Sorted by Magnitude)&#39;</span>
+                <span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Magnitute of Coefficients&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    
+    <span class="k">def</span> <span class="nf">submission_proba</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">IDcol</span><span class="p">,</span> <span class="n">proba_colnames</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;Submission.csv&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">submission</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span> 
+            <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">predict</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">IDcol</span><span class="p">)</span>
+            <span class="p">})</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">proba_colnames</span><span class="p">))</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">proba_colnames</span><span class="p">)):</span>
+                <span class="n">submission</span><span class="p">[</span><span class="n">proba_colnames</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_pred_prob</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">submission</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">proba_colnames</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_pred_prob</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">submission</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    
+    <span class="k">def</span> <span class="nf">set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cv_folds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_default</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the parameters of the model. Only the parameters to be</span>
+<span class="sd">        updated are required to be passed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        param : dict, default None</span>
+<span class="sd">            A dictionary of key,value pairs where the keys are the parameters</span>
+<span class="sd">            to be updated and values as the new value of those parameters.</span>
+<span class="sd">            If None, no update performed</span>
+<span class="sd">            Ignored if set_default iss True.</span>
+<span class="sd">        </span>
+<span class="sd">        cv_folds : int, default None</span>
+<span class="sd">            Pass the number of CV folds to be used in the model.</span>
+<span class="sd">            If None, no update performed.</span>
+
+<span class="sd">        set_default : bool, default True</span>
+<span class="sd">            if True, the model will be set to default parameters as defined </span>
+<span class="sd">            in model definition by scikit-learn. Note that this will not </span>
+<span class="sd">            affect the cv_folds parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#Check input</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">param</span><span class="p">,</span><span class="s1">&#39;param&#39;</span><span class="p">,</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">set_default</span><span class="p">,</span><span class="s1">&#39;set_default&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">param</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span>
+                    <span class="nb">set</span><span class="p">(</span><span class="n">base_classification</span><span class="o">.</span><span class="n">default_parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                    <span class="p">):</span>
+                <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;The parameters passed should be a </span>
+<span class="s2">                    subset of the model parameters&quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">set_default</span><span class="p">:</span>
+            <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_parameters</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">param</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">param</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">cv_folds</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cv_folds</span> <span class="o">=</span> <span class="n">cv_folds</span>
+
+    <span class="k">def</span> <span class="nf">export_model_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDcol</span><span class="p">,</span> <span class="n">mstr</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_ensemble_dir</span><span class="p">()</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s1">&#39;ensemble/</span><span class="si">%s</span><span class="s1">_models.csv&#39;</span><span class="o">%</span><span class="n">mstr</span><span class="p">)</span>
+        <span class="n">comb_series</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classification_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">,</span> 
+                                        <span class="n">verify_integrity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">mID</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">models</span><span class="p">[</span><span class="s1">&#39;ModelID&#39;</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mID</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">comb_series</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            
+        <span class="n">comb_series</span><span class="p">[</span><span class="s1">&#39;ModelID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mID</span>
+        <span class="n">models</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comb_series</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="n">models</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">float_format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.5f</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">model_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                                <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span>
+                                <span class="s1">&#39;ensemble/</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">.csv&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">mstr</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">mID</span><span class="p">))</span>
+                                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">submission</span><span class="p">(</span><span class="n">IDcol</span><span class="p">,</span> <span class="n">model_filename</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">algo_specific_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">printTopN</span><span class="p">):</span>
+          <span class="c1">#Run algo-specific commands</span>
+          <span class="k">pass</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">export_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">IDcol</span><span class="p">):</span>
+          <span class="c1">#Export models</span>
+          <span class="k">pass</span>
+
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### LOGISTIC REGRESSION</span>
+<span class="c1">#####################################################################</span>
+
+<div class="viewcode-block" id="logistic_regression"><a class="viewcode-back" href="../../classification/logistic_regression.html#easyML.models_classification.logistic_regression">[docs]</a><span class="k">class</span> <span class="nc">logistic_regression</span><span class="p">(</span><span class="n">base_classification</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create a Logistic Regression model using implementation from </span>
+<span class="sd">    scikit-learn.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_block : object of type easyML.DataBlock</span>
+<span class="sd">        An object of easyML&#39;s DataBlock class. You should first create an </span>
+<span class="sd">        object of that class and then pass it as a parameter.</span>
+
+<span class="sd">    predictors : list of strings, default []</span>
+<span class="sd">        A list of columns which are to be used as predictors (also called </span>
+<span class="sd">        independent variables or features).</span>
+<span class="sd">        The default value is an empty list because these need not always be</span>
+<span class="sd">        defined at the time of class initialization. The set_predictors </span>
+<span class="sd">        method can be used later but before creating any predictive model.</span>
+
+<span class="sd">    cv_folds : int, default 5</span>
+<span class="sd">        The number of folds to be created while performing CV.</span>
+<span class="sd">        This parameter can be adjusted later by passing using the </span>
+<span class="sd">        set_parameters method</span>
+
+<span class="sd">    scoring_metric : str, default &#39;accuracy&#39;</span>
+<span class="sd">        The scoring metric to be used for evaluating the model across the</span>
+<span class="sd">        different functions available. The available options are </span>
+<span class="sd">        - &#39;accuracy&#39;</span>
+<span class="sd">        - &#39;auc&#39;</span>
+<span class="sd">        - &#39;log_loss&#39;</span>
+<span class="sd">        - &#39;f1&#39;</span>
+<span class="sd">        - &#39;average_precision&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    additional_display_metrics : list of string, default []</span>
+<span class="sd">        A list of additional display metrics to be shown for the test and</span>
+<span class="sd">        train dataframes in data_block. Note:</span>
+<span class="sd">        - These will be just shown for user reference and not actually used </span>
+<span class="sd">        for model evaluation</span>
+<span class="sd">        - The same available options as scoring_metric apply</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">default_parameters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mf">1.0</span><span class="p">,</span> 
+            <span class="s1">&#39;tol&#39;</span><span class="p">:</span><span class="mf">0.0001</span><span class="p">,</span> 
+            <span class="s1">&#39;solver&#39;</span><span class="p">:</span><span class="s1">&#39;liblinear&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;multi_class&#39;</span><span class="p">:</span><span class="s1">&#39;ovr&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;class_weight&#39;</span><span class="p">:</span><span class="s1">&#39;balanced&#39;</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span><span class="n">data_block</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="p">[],</span><span class="n">cv_folds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">scoring_metric</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span><span class="n">additional_display_metrics</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="n">base_classification</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">alg</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">(),</span> <span class="n">data_block</span><span class="o">=</span><span class="n">data_block</span><span class="p">,</span> 
+            <span class="n">predictors</span><span class="o">=</span><span class="n">predictors</span><span class="p">,</span><span class="n">cv_folds</span><span class="o">=</span><span class="n">cv_folds</span><span class="p">,</span>
+            <span class="n">scoring_metric</span><span class="o">=</span><span class="n">scoring_metric</span><span class="p">,</span> 
+            <span class="n">additional_display_metrics</span><span class="o">=</span><span class="n">additional_display_metrics</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Coefficients&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+
+        <span class="c1">#Set parameters to default values:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">set_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">algo_specific_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">printTopN</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_target_class</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">coeff</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">intercept_</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> 
+                <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Intercept&quot;</span><span class="p">]</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_abs_coefficients</span><span class="p">(</span><span class="n">coeff</span><span class="p">,</span><span class="n">printTopN</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;coef_class_</span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">num_target_class</span><span class="p">)]</span>
+            <span class="n">coeff</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">coef_</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> 
+                            <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span>
+                            <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span>
+                            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Coefficients:&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Coefficients&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coeff</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+    
+    
+    <span class="k">def</span> <span class="nf">export_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDcol</span><span class="p">):</span>
+        <span class="c1">#Export the model into the model file as well as create a submission </span>
+        <span class="c1">#with model index. This will be used for creating an ensemble.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_model_base</span><span class="p">(</span><span class="n">IDcol</span><span class="p">,</span><span class="s1">&#39;logistic_reg&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### DECISION TREE</span>
+<span class="c1">#####################################################################</span>
+
+<div class="viewcode-block" id="decision_tree"><a class="viewcode-back" href="../../classification/decision_tree.html#easyML.models_classification.decision_tree">[docs]</a><span class="k">class</span> <span class="nc">decision_tree</span><span class="p">(</span><span class="n">base_classification</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot; Create a Decision Tree model using implementation from </span>
+<span class="sd">    scikit-learn.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_block : object of type easyML.DataBlock</span>
+<span class="sd">        An object of easyML&#39;s DataBlock class. You should first create an </span>
+<span class="sd">        object of that class and then pass it as a parameter.</span>
+
+<span class="sd">    predictors : list of strings, default []</span>
+<span class="sd">        A list of columns which are to be used as predictors (also called </span>
+<span class="sd">        independent variables or features).</span>
+<span class="sd">        The default value is an empty list because these need not always be</span>
+<span class="sd">        defined at the time of class initialization. The set_predictors </span>
+<span class="sd">        method can be used later but before creating any predictive model.</span>
+
+<span class="sd">    cv_folds : int, default 5</span>
+<span class="sd">        The number of folds to be created while performing CV.</span>
+<span class="sd">        This parameter can be adjusted later by passing using the </span>
+<span class="sd">        set_parameters method</span>
+
+<span class="sd">    scoring_metric : str, default &#39;accuracy&#39;</span>
+<span class="sd">        The scoring metric to be used for evaluating the model across the</span>
+<span class="sd">        different functions available. The available options are </span>
+<span class="sd">        - &#39;accuracy&#39;</span>
+<span class="sd">        - &#39;auc&#39;</span>
+<span class="sd">        - &#39;log_loss&#39;</span>
+<span class="sd">        - &#39;f1&#39;</span>
+<span class="sd">        - &#39;average_precision&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    additional_display_metrics : list of string, default []</span>
+<span class="sd">        A list of additional display metrics to be shown for the test and</span>
+<span class="sd">        train dataframes in data_block. Note:</span>
+<span class="sd">        - These will be just shown for user reference and not actually used </span>
+<span class="sd">        for model evaluation</span>
+<span class="sd">        - The same available options as scoring_metric apply</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">default_parameters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;criterion&#39;</span><span class="p">:</span><span class="s1">&#39;gini&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;min_samples_split&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> 
+        <span class="s1">&#39;min_samples_leaf&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> 
+        <span class="s1">&#39;max_features&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;random_state&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;max_leaf_nodes&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;class_weight&#39;</span><span class="p">:</span><span class="s1">&#39;balanced&#39;</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span><span class="n">data_block</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="p">[],</span><span class="n">cv_folds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">scoring_metric</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span><span class="n">additional_display_metrics</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="n">base_classification</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">alg</span><span class="o">=</span><span class="n">DecisionTreeClassifier</span><span class="p">(),</span> <span class="n">data_block</span><span class="o">=</span><span class="n">data_block</span><span class="p">,</span> 
+            <span class="n">predictors</span><span class="o">=</span><span class="n">predictors</span><span class="p">,</span><span class="n">cv_folds</span><span class="o">=</span><span class="n">cv_folds</span><span class="p">,</span>
+            <span class="n">scoring_metric</span><span class="o">=</span><span class="n">scoring_metric</span><span class="p">,</span> 
+            <span class="n">additional_display_metrics</span><span class="o">=</span><span class="n">additional_display_metrics</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Feature_Importance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+
+        <span class="c1">#Set parameters to default values:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">set_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">algo_specific_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">printTopN</span><span class="p">):</span>
+        <span class="c1"># print Feature Importance Scores table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">,</span> 
+                            <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_feature_importance</span><span class="p">(</span><span class="n">printTopN</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Feature_Importance&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">export_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDcol</span><span class="p">):</span>
+        <span class="c1">#Export the model into the model file as well as create a submission </span>
+        <span class="c1">#with model index. This will be used for creating an ensemble.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_model_base</span><span class="p">(</span><span class="n">IDcol</span><span class="p">,</span><span class="s1">&#39;decision_tree&#39;</span><span class="p">)</span></div>
+
+    <span class="c1">## UNDER DEVELOPMENT CODE FOR PRINTING TREES</span>
+    <span class="c1"># def get_tree(self):</span>
+    <span class="c1">#     return self.alg.tree_</span>
+    <span class="c1"># Print the tree in visual format</span>
+    <span class="c1"># Inputs:</span>
+    <span class="c1">#     export_pdf - if True, a pdf will be exported with the </span>
+    <span class="c1">#     filename as specified in pdf_name argument</span>
+    <span class="c1">#     pdf_name - name of the pdf file if export_pdf is True</span>
+    <span class="c1"># def printTree(self, export_pdf=True, file_name=&quot;Decision_Tree.pdf&quot;):</span>
+    <span class="c1">#     dot_data = StringIO() </span>
+    <span class="c1">#     export_graphviz(</span>
+    <span class="c1">#             self.alg, out_file=dot_data, feature_names=self.predictors,</span>
+    <span class="c1">#             filled=True, rounded=True, special_characters=True)</span>
+
+    <span class="c1">#     export_graphviz(</span>
+    <span class="c1">#         self.alg, out_file=&#39;data.dot&#39;, feature_names=self.predictors,  </span>
+    <span class="c1">#         filled=True, rounded=True, special_characters=True</span>
+    <span class="c1">#         ) </span>
+    <span class="c1">#     graph = pydot.graph_from_dot_data(dot_data.getvalue())</span>
+        
+    <span class="c1">#     if export_pdf:</span>
+    <span class="c1">#         graph.write_pdf(file_name)</span>
+
+    <span class="c1">#     return graph</span>
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### RANDOM FOREST</span>
+<span class="c1">#####################################################################</span>
+
+<div class="viewcode-block" id="random_forest"><a class="viewcode-back" href="../../classification/random_forest.html#easyML.models_classification.random_forest">[docs]</a><span class="k">class</span> <span class="nc">random_forest</span><span class="p">(</span><span class="n">base_classification</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create a Random Forest model using implementation from </span>
+<span class="sd">    scikit-learn.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_block : object of type easyML.DataBlock</span>
+<span class="sd">        An object of easyML&#39;s DataBlock class. You should first create an </span>
+<span class="sd">        object of that class and then pass it as a parameter.</span>
+
+<span class="sd">    predictors : list of strings, default []</span>
+<span class="sd">        A list of columns which are to be used as predictors (also called </span>
+<span class="sd">        independent variables or features).</span>
+<span class="sd">        The default value is an empty list because these need not always be</span>
+<span class="sd">        defined at the time of class initialization. The set_predictors </span>
+<span class="sd">        method can be used later but before creating any predictive model.</span>
+
+<span class="sd">    cv_folds : int, default 5</span>
+<span class="sd">        The number of folds to be created while performing CV.</span>
+<span class="sd">        This parameter can be adjusted later by passing using the </span>
+<span class="sd">        set_parameters method</span>
+
+<span class="sd">    scoring_metric : str, default &#39;accuracy&#39;</span>
+<span class="sd">        The scoring metric to be used for evaluating the model across the</span>
+<span class="sd">        different functions available. The available options are </span>
+<span class="sd">        - &#39;accuracy&#39;</span>
+<span class="sd">        - &#39;auc&#39;</span>
+<span class="sd">        - &#39;log_loss&#39;</span>
+<span class="sd">        - &#39;f1&#39;</span>
+<span class="sd">        - &#39;average_precision&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    additional_display_metrics : list of string, default []</span>
+<span class="sd">        A list of additional display metrics to be shown for the test and</span>
+<span class="sd">        train dataframes in data_block. Note:</span>
+<span class="sd">        - These will be just shown for user reference and not actually used </span>
+<span class="sd">        for model evaluation</span>
+<span class="sd">        - The same available options as scoring_metric apply</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">default_parameters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> 
+        <span class="s1">&#39;criterion&#39;</span><span class="p">:</span><span class="s1">&#39;gini&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;min_samples_split&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> 
+        <span class="s1">&#39;min_samples_leaf&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> 
+        <span class="s1">&#39;max_features&#39;</span><span class="p">:</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;max_leaf_nodes&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;oob_score&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="s1">&#39;random_state&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;class_weight&#39;</span><span class="p">:</span><span class="s1">&#39;balanced&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;n_jobs&#39;</span><span class="p">:</span><span class="mi">1</span> 
+    <span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span><span class="n">data_block</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="p">[],</span><span class="n">cv_folds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">scoring_metric</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span><span class="n">additional_display_metrics</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="n">base_classification</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">alg</span><span class="o">=</span><span class="n">RandomForestClassifier</span><span class="p">(),</span> <span class="n">data_block</span><span class="o">=</span><span class="n">data_block</span><span class="p">,</span> 
+            <span class="n">predictors</span><span class="o">=</span><span class="n">predictors</span><span class="p">,</span><span class="n">cv_folds</span><span class="o">=</span><span class="n">cv_folds</span><span class="p">,</span>
+            <span class="n">scoring_metric</span><span class="o">=</span><span class="n">scoring_metric</span><span class="p">,</span> 
+            <span class="n">additional_display_metrics</span><span class="o">=</span><span class="n">additional_display_metrics</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Feature_Importance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;OOB_Score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+
+        <span class="c1">#Set parameters to default values:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">set_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">algo_specific_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">printTopN</span><span class="p">):</span>
+        <span class="c1"># print Feature Importance Scores table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">,</span> 
+            <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_feature_importance</span><span class="p">(</span><span class="n">printTopN</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Feature_Importance&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                                <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;oob_score&#39;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;OOB Score : </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">oob_score_</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;OOB_Score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">oob_score_</span>
+
+    <span class="k">def</span> <span class="nf">export_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDcol</span><span class="p">):</span>
+        <span class="c1">#Export the model into the model file as well as create a submission </span>
+        <span class="c1">#with model index. This will be used for creating an ensemble.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_model_base</span><span class="p">(</span><span class="n">IDcol</span><span class="p">,</span><span class="s1">&#39;random_forest&#39;</span><span class="p">)</span></div>
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### EXTRA TREES FOREST</span>
+<span class="c1">#####################################################################</span>
+
+<div class="viewcode-block" id="extra_trees"><a class="viewcode-back" href="../../classification/extra_trees.html#easyML.models_classification.extra_trees">[docs]</a><span class="k">class</span> <span class="nc">extra_trees</span><span class="p">(</span><span class="n">base_classification</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create an Extra Trees Forest model using implementation from </span>
+<span class="sd">    scikit-learn.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_block : object of type easyML.DataBlock</span>
+<span class="sd">        An object of easyML&#39;s DataBlock class. You should first create an </span>
+<span class="sd">        object of that class and then pass it as a parameter.</span>
+
+<span class="sd">    predictors : list of strings, default []</span>
+<span class="sd">        A list of columns which are to be used as predictors (also called </span>
+<span class="sd">        independent variables or features).</span>
+<span class="sd">        The default value is an empty list because these need not always be</span>
+<span class="sd">        defined at the time of class initialization. The set_predictors </span>
+<span class="sd">        method can be used later but before creating any predictive model.</span>
+
+<span class="sd">    cv_folds : int, default 5</span>
+<span class="sd">        The number of folds to be created while performing CV.</span>
+<span class="sd">        This parameter can be adjusted later by passing using the </span>
+<span class="sd">        set_parameters method</span>
+
+<span class="sd">    scoring_metric : str, default &#39;accuracy&#39;</span>
+<span class="sd">        The scoring metric to be used for evaluating the model across the</span>
+<span class="sd">        different functions available. The available options are </span>
+<span class="sd">        - &#39;accuracy&#39;</span>
+<span class="sd">        - &#39;auc&#39;</span>
+<span class="sd">        - &#39;log_loss&#39;</span>
+<span class="sd">        - &#39;f1&#39;</span>
+<span class="sd">        - &#39;average_precision&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    additional_display_metrics : list of string, default []</span>
+<span class="sd">        A list of additional display metrics to be shown for the test and</span>
+<span class="sd">        train dataframes in data_block. Note:</span>
+<span class="sd">        - These will be just shown for user reference and not actually used </span>
+<span class="sd">        for model evaluation</span>
+<span class="sd">        - The same available options as scoring_metric apply</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">default_parameters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> 
+        <span class="s1">&#39;criterion&#39;</span><span class="p">:</span><span class="s1">&#39;gini&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;min_samples_split&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;min_samples_leaf&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> 
+        <span class="s1">&#39;max_features&#39;</span><span class="p">:</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;max_leaf_nodes&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;oob_score&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="s1">&#39;random_state&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;class_weight&#39;</span><span class="p">:</span><span class="s1">&#39;balanced&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;n_jobs&#39;</span><span class="p">:</span><span class="mi">1</span> 
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span><span class="n">data_block</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="p">[],</span><span class="n">cv_folds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">scoring_metric</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span><span class="n">additional_display_metrics</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="n">base_classification</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">alg</span><span class="o">=</span><span class="n">ExtraTreesClassifier</span><span class="p">(),</span> <span class="n">data_block</span><span class="o">=</span><span class="n">data_block</span><span class="p">,</span> 
+            <span class="n">predictors</span><span class="o">=</span><span class="n">predictors</span><span class="p">,</span><span class="n">cv_folds</span><span class="o">=</span><span class="n">cv_folds</span><span class="p">,</span>
+            <span class="n">scoring_metric</span><span class="o">=</span><span class="n">scoring_metric</span><span class="p">,</span> 
+            <span class="n">additional_display_metrics</span><span class="o">=</span><span class="n">additional_display_metrics</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Feature_Importance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;OOB_Score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+
+        <span class="c1">#Set parameters to default values:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">set_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">algo_specific_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">printTopN</span><span class="p">):</span>
+        <span class="c1"># print Feature Importance Scores table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">,</span> 
+                                <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span>
+                            <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_feature_importance</span><span class="p">(</span><span class="n">printTopN</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Feature_Importance&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                                <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;oob_score&#39;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;OOB Score : </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">oob_score_</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;OOB_Score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">oob_score_</span>
+
+    <span class="k">def</span> <span class="nf">export_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDcol</span><span class="p">):</span>
+        <span class="c1">#Export the model into the model file as well as create a submission </span>
+        <span class="c1">#with model index. This will be used for creating an ensemble.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_model_base</span><span class="p">(</span><span class="n">IDcol</span><span class="p">,</span><span class="s1">&#39;extra_trees&#39;</span><span class="p">)</span></div>
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### ADABOOST CLASSIFICATION</span>
+<span class="c1">#####################################################################</span>
+
+<div class="viewcode-block" id="adaboost"><a class="viewcode-back" href="../../classification/adaboost.html#easyML.models_classification.adaboost">[docs]</a><span class="k">class</span> <span class="nc">adaboost</span><span class="p">(</span><span class="n">base_classification</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create an AdaBoost model using implementation from </span>
+<span class="sd">    scikit-learn.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_block : object of type easyML.DataBlock</span>
+<span class="sd">        An object of easyML&#39;s DataBlock class. You should first create an </span>
+<span class="sd">        object of that class and then pass it as a parameter.</span>
+
+<span class="sd">    predictors : list of strings, default []</span>
+<span class="sd">        A list of columns which are to be used as predictors (also called </span>
+<span class="sd">        independent variables or features).</span>
+<span class="sd">        The default value is an empty list because these need not always be</span>
+<span class="sd">        defined at the time of class initialization. The set_predictors </span>
+<span class="sd">        method can be used later but before creating any predictive model.</span>
+
+<span class="sd">    cv_folds : int, default 5</span>
+<span class="sd">        The number of folds to be created while performing CV.</span>
+<span class="sd">        This parameter can be adjusted later by passing using the </span>
+<span class="sd">        set_parameters method</span>
+
+<span class="sd">    scoring_metric : str, default &#39;accuracy&#39;</span>
+<span class="sd">        The scoring metric to be used for evaluating the model across the</span>
+<span class="sd">        different functions available. The available options are </span>
+<span class="sd">        - &#39;accuracy&#39;</span>
+<span class="sd">        - &#39;auc&#39;</span>
+<span class="sd">        - &#39;log_loss&#39;</span>
+<span class="sd">        - &#39;f1&#39;</span>
+<span class="sd">        - &#39;average_precision&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    additional_display_metrics : list of string, default []</span>
+<span class="sd">        A list of additional display metrics to be shown for the test and</span>
+<span class="sd">        train dataframes in data_block. Note:</span>
+<span class="sd">        - These will be just shown for user reference and not actually used </span>
+<span class="sd">        for model evaluation</span>
+<span class="sd">        - The same available options as scoring_metric apply</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">default_parameters</span> <span class="o">=</span> <span class="p">{</span> 
+        <span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span> 
+        <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span><span class="mf">1.0</span> 
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span><span class="n">data_block</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="p">[],</span><span class="n">cv_folds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">scoring_metric</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span><span class="n">additional_display_metrics</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="n">base_classification</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">alg</span><span class="o">=</span><span class="n">AdaBoostClassifier</span><span class="p">(),</span> <span class="n">data_block</span><span class="o">=</span><span class="n">data_block</span><span class="p">,</span> 
+            <span class="n">predictors</span><span class="o">=</span><span class="n">predictors</span><span class="p">,</span><span class="n">cv_folds</span><span class="o">=</span><span class="n">cv_folds</span><span class="p">,</span>
+            <span class="n">scoring_metric</span><span class="o">=</span><span class="n">scoring_metric</span><span class="p">,</span> 
+            <span class="n">additional_display_metrics</span><span class="o">=</span><span class="n">additional_display_metrics</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Feature_Importance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+
+        <span class="c1">#Set parameters to default values:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">set_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">algo_specific_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">printTopN</span><span class="p">):</span>
+        <span class="c1"># print Feature Importance Scores table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">,</span> 
+                        <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_feature_importance</span><span class="p">(</span><span class="n">printTopN</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Feature_Importance&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;AdaBoost Estimator&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Estimator Error&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;n_estimators&#39;</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">estimator_errors_</span>
+            <span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;n_estimators&#39;</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">estimator_weights_</span>
+            <span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;estimator_errors&#39;</span><span class="p">,</span><span class="s1">&#39;estimator_weights&#39;</span><span class="p">],</span> 
+            <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span>
+            <span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">export_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDcol</span><span class="p">):</span>
+        <span class="c1">#Export the model into the model file as well as create a submission </span>
+        <span class="c1">#with model index. This will be used for creating an ensemble.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_model_base</span><span class="p">(</span><span class="n">IDcol</span><span class="p">,</span><span class="s1">&#39;adaboost&#39;</span><span class="p">)</span></div>
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### GRADIENT BOOSTING MACHINE</span>
+<span class="c1">#####################################################################</span>
+
+<div class="viewcode-block" id="gradient_boosting_machine"><a class="viewcode-back" href="../../classification/gbm.html#easyML.models_classification.gradient_boosting_machine">[docs]</a><span class="k">class</span> <span class="nc">gradient_boosting_machine</span><span class="p">(</span><span class="n">base_classification</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create a GBM (Gradient Boosting Machine) model using implementation </span>
+<span class="sd">    from scikit-learn.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_block : object of type easyML.DataBlock</span>
+<span class="sd">        An object of easyML&#39;s DataBlock class. You should first create an </span>
+<span class="sd">        object of that class and then pass it as a parameter.</span>
+
+<span class="sd">    predictors : list of strings, default []</span>
+<span class="sd">        A list of columns which are to be used as predictors (also called </span>
+<span class="sd">        independent variables or features).</span>
+<span class="sd">        The default value is an empty list because these need not always be</span>
+<span class="sd">        defined at the time of class initialization. The set_predictors </span>
+<span class="sd">        method can be used later but before creating any predictive model.</span>
+
+<span class="sd">    cv_folds : int, default 5</span>
+<span class="sd">        The number of folds to be created while performing CV.</span>
+<span class="sd">        This parameter can be adjusted later by passing using the </span>
+<span class="sd">        set_parameters method</span>
+
+<span class="sd">    scoring_metric : str, default &#39;accuracy&#39;</span>
+<span class="sd">        The scoring metric to be used for evaluating the model across the</span>
+<span class="sd">        different functions available. The available options are </span>
+<span class="sd">        - &#39;accuracy&#39;</span>
+<span class="sd">        - &#39;auc&#39;</span>
+<span class="sd">        - &#39;log_loss&#39;</span>
+<span class="sd">        - &#39;f1&#39;</span>
+<span class="sd">        - &#39;average_precision&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    additional_display_metrics : list of string, default []</span>
+<span class="sd">        A list of additional display metrics to be shown for the test and</span>
+<span class="sd">        train dataframes in data_block. Note:</span>
+<span class="sd">        - These will be just shown for user reference and not actually used </span>
+<span class="sd">        for model evaluation</span>
+<span class="sd">        - The same available options as scoring_metric apply</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">default_parameters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;loss&#39;</span><span class="p">:</span><span class="s1">&#39;deviance&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span> 
+        <span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span> 
+        <span class="s1">&#39;subsample&#39;</span><span class="p">:</span><span class="mf">1.0</span><span class="p">,</span> 
+        <span class="s1">&#39;min_samples_split&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> 
+        <span class="s1">&#39;min_samples_leaf&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;init&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;random_state&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;max_features&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;verbose&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> 
+        <span class="s1">&#39;max_leaf_nodes&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;warm_start&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="s1">&#39;presort&#39;</span><span class="p">:</span><span class="s1">&#39;auto&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">data_block</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="p">[],</span><span class="n">cv_folds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">scoring_metric</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span><span class="n">additional_display_metrics</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="n">base_classification</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">alg</span><span class="o">=</span><span class="n">GradientBoostingClassifier</span><span class="p">(),</span> <span class="n">data_block</span><span class="o">=</span><span class="n">data_block</span><span class="p">,</span> 
+            <span class="n">predictors</span><span class="o">=</span><span class="n">predictors</span><span class="p">,</span><span class="n">cv_folds</span><span class="o">=</span><span class="n">cv_folds</span><span class="p">,</span>
+            <span class="n">scoring_metric</span><span class="o">=</span><span class="n">scoring_metric</span><span class="p">,</span> 
+            <span class="n">additional_display_metrics</span><span class="o">=</span><span class="n">additional_display_metrics</span>
+            <span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Feature_Importance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+        
+        <span class="c1">#Set parameters to default values:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">set_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">algo_specific_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">printTopN</span><span class="p">):</span>
+        <span class="c1"># print Feature Importance Scores table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">,</span> 
+                            <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span>
+                            <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_feature_importance</span><span class="p">(</span><span class="n">printTopN</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Feature_Importance&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">feature_imp</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+
+        <span class="c1">#Plot OOB estimates if subsample &lt;1:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;subsample&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;GBM Iteration&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Score&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;n_estimators&#39;</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">oob_improvement_</span>
+                <span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;oob_improvement_&#39;</span><span class="p">,</span><span class="s1">&#39;train_score_&#39;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        
+    <span class="k">def</span> <span class="nf">export_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDcol</span><span class="p">):</span>
+        <span class="c1">#Export the model into the model file as well as create a submission </span>
+        <span class="c1">#with model index. This will be used for creating an ensemble.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_model_base</span><span class="p">(</span><span class="n">IDcol</span><span class="p">,</span><span class="s1">&#39;gbm&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### Support Vector Classifier</span>
+<span class="c1">#####################################################################</span>
+
+<span class="k">class</span> <span class="nc">linear_svm</span><span class="p">(</span><span class="n">base_classification</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create a Linear Support Vector Machine model using implementation </span>
+<span class="sd">    from scikit-learn.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_block : object of type easyML.DataBlock</span>
+<span class="sd">        An object of easyML&#39;s DataBlock class. You should first create an </span>
+<span class="sd">        object of that class and then pass it as a parameter.</span>
+
+<span class="sd">    predictors : list of strings, default []</span>
+<span class="sd">        A list of columns which are to be used as predictors (also called </span>
+<span class="sd">        independent variables or features).</span>
+<span class="sd">        The default value is an empty list because these need not always be</span>
+<span class="sd">        defined at the time of class initialization. The set_predictors </span>
+<span class="sd">        method can be used later but before creating any predictive model.</span>
+
+<span class="sd">    cv_folds : int, default 5</span>
+<span class="sd">        The number of folds to be created while performing CV.</span>
+<span class="sd">        This parameter can be adjusted later by passing using the </span>
+<span class="sd">        set_parameters method</span>
+
+<span class="sd">    scoring_metric : str, default &#39;accuracy&#39;</span>
+<span class="sd">        The scoring metric to be used for evaluating the model across the</span>
+<span class="sd">        different functions available. The available options are </span>
+<span class="sd">        - &#39;accuracy&#39;</span>
+<span class="sd">        - &#39;auc&#39;</span>
+<span class="sd">        - &#39;log_loss&#39;</span>
+<span class="sd">        - &#39;f1&#39;</span>
+<span class="sd">        - &#39;average_precision&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    additional_display_metrics : list of string, default []</span>
+<span class="sd">        A list of additional display metrics to be shown for the test and</span>
+<span class="sd">        train dataframes in data_block. Note:</span>
+<span class="sd">        - These will be just shown for user reference and not actually used </span>
+<span class="sd">        for model evaluation</span>
+<span class="sd">        - The same available options as scoring_metric apply</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">default_parameters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mf">1.0</span><span class="p">,</span> 
+        <span class="s1">&#39;kernel&#39;</span><span class="p">:</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>  <span class="c1">#modified not default</span>
+        <span class="s1">&#39;degree&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> 
+        <span class="s1">&#39;gamma&#39;</span><span class="p">:</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> 
+        <span class="s1">&#39;coef0&#39;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">,</span> 
+        <span class="s1">&#39;shrinking&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> 
+        <span class="s1">&#39;probability&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="s1">&#39;tol&#39;</span><span class="p">:</span><span class="mf">0.001</span><span class="p">,</span> 
+        <span class="s1">&#39;cache_size&#39;</span><span class="p">:</span><span class="mi">200</span><span class="p">,</span> 
+        <span class="s1">&#39;class_weight&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;verbose&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> 
+        <span class="s1">&#39;decision_function_shape&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="s1">&#39;random_state&#39;</span><span class="p">:</span><span class="kc">None</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span><span class="n">data_block</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="p">[],</span><span class="n">cv_folds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">scoring_metric</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span><span class="n">additional_display_metrics</span><span class="o">=</span><span class="p">[]):</span>
+
+        <span class="n">base_classification</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">alg</span><span class="o">=</span><span class="n">SVC</span><span class="p">(),</span> <span class="n">data_block</span><span class="o">=</span><span class="n">data_block</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="n">predictors</span><span class="p">,</span>
+            <span class="n">cv_folds</span><span class="o">=</span><span class="n">cv_folds</span><span class="p">,</span><span class="n">scoring_metric</span><span class="o">=</span><span class="n">scoring_metric</span><span class="p">,</span> 
+            <span class="n">additional_display_metrics</span><span class="o">=</span><span class="n">additional_display_metrics</span>
+            <span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Coefficients&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+
+        <span class="c1">#Set parameters to default values:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">set_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1">#Check if probabilities enables:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">get_params</span><span class="p">()[</span><span class="s1">&#39;probability&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">probabilities_available</span> <span class="o">=</span> <span class="kc">False</span>  
+        
+    
+    <span class="k">def</span> <span class="nf">algo_specific_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">printTopN</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_target_class</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">coeff</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">intercept_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span>
+                <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Intercept&quot;</span><span class="p">]</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span>
+                <span class="p">)</span>
+
+            <span class="c1">#print the chart of importances</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_abs_coefficients</span><span class="p">(</span><span class="n">coeff</span><span class="p">,</span> <span class="n">printTopN</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;coef_class_</span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">num_target_class</span><span class="p">)]</span>
+            <span class="n">coeff</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="o">.</span><span class="n">coef_</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> 
+                            <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span>
+                            <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span>
+                            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Coefficients:&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_output</span><span class="p">[</span><span class="s1">&#39;Coefficients&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coeff</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">export_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDcol</span><span class="p">):</span>
+        <span class="c1">#Export the model into the model file as well as create a submission </span>
+        <span class="c1">#with model index. This will be used for creating an ensemble.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_model_base</span><span class="p">(</span><span class="n">IDcol</span><span class="p">,</span><span class="s1">&#39;linear_svm&#39;</span><span class="p">)</span>
+
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### XGBOOST ALGORITHM (UNDER DEVELOPMENT)</span>
+<span class="c1">#####################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">#Define the class similar to the overall classification class</span>
+<span class="sd">class XGBoost(base_classification):</span>
+<span class="sd">    def __init__(self,data_block, predictors, cv_folds=5,scoring_metric_skl=&#39;accuracy&#39;, scoring_metric_xgb=&#39;error&#39;):</span>
+<span class="sd">        </span>
+<span class="sd">        base_classification.__init__(self, alg=XGBClassifier(), data_block=data_block, predictors=predictors,cv_folds=cv_folds,scoring_metric=scoring_metric_skl)</span>
+<span class="sd">        </span>
+<span class="sd">        #Define default parameters on your own:</span>
+<span class="sd">        self.default_parameters = { </span>
+<span class="sd">                                 &#39;max_depth&#39;:3, &#39;learning_rate&#39;:0.1,</span>
+<span class="sd">                                 &#39;n_estimators&#39;:100, &#39;silent&#39;:True,</span>
+<span class="sd">                                 &#39;objective&#39;:&quot;binary:logistic&quot;,</span>
+<span class="sd">                                 &#39;nthread&#39;:1, &#39;gamma&#39;:0, &#39;min_child_weight&#39;:1,</span>
+<span class="sd">                                 &#39;max_delta_step&#39;:0, &#39;subsample&#39;:1, &#39;colsample_bytree&#39;:1, &#39;colsample_bylevel&#39;:1,</span>
+<span class="sd">                                 &#39;reg_alpha&#39;:0, &#39;reg_lambda&#39;:1, &#39;scale_pos_weight&#39;:1,</span>
+<span class="sd">                                 &#39;base_score&#39;:0.5, &#39;seed&#39;:0, &#39;missing&#39;:None</span>
+<span class="sd">                            }</span>
+<span class="sd">        self.model_output = pd.Series(self.default_parameters)</span>
+
+<span class="sd">        #create DMatrix with nan as missing by default. If later this is changed then the matrix are re-calculated. If not set,will give error is nan present in data</span>
+<span class="sd">        self.xgtrain = xgb.DMatrix(self.datablock.train[self.predictors].values, label=self.datablock.train[self.datablock.target].values, missing=np.nan)</span>
+<span class="sd">        self.xgtest = xgb.DMatrix(self.datablock.predict[self.predictors].values, missing=np.nan)</span>
+<span class="sd">        self.num_class = 2</span>
+<span class="sd">        self.n_estimators = 10</span>
+<span class="sd">        self.eval_metric = &#39;error&#39;</span>
+
+<span class="sd">        self.train_predictions = []</span>
+<span class="sd">        self.train_pred_prob = []</span>
+<span class="sd">        self.test_predictions = []</span>
+<span class="sd">        self.test_pred_prob = []</span>
+<span class="sd">        self.num_target_class = len(data_train[target].unique())</span>
+
+<span class="sd">        #define scoring metric:</span>
+<span class="sd">        self.scoring_metric_skl = scoring_metric_skl</span>
+<span class="sd">        # if scoring_metric_xgb==&#39;f1&#39;:</span>
+<span class="sd">        #    self.scoring_metric_xgb = self.xg_f1</span>
+<span class="sd">        # else:</span>
+<span class="sd">        self.scoring_metric_xgb = scoring_metric_xgb</span>
+
+<span class="sd">        #Define a Series object to store generic classification model outcomes; </span>
+<span class="sd">        self.classification_output=pd.Series(index=[&#39;ModelID&#39;,&#39;Accuracy&#39;,&#39;CVScore_mean&#39;,&#39;CVScore_std&#39;,&#39;SpecifiedMetric&#39;,</span>
+<span class="sd">                                             &#39;ActualScore (manual entry)&#39;,&#39;CVMethod&#39;,&#39;ConfusionMatrix&#39;,&#39;Predictors&#39;])</span>
+
+<span class="sd">        #feature importance (g_scores)</span>
+<span class="sd">        self.feature_imp = None</span>
+<span class="sd">        self.model_output[&#39;Feature_Importance&#39;] = &quot;-&quot;</span>
+
+<span class="sd">        #Set parameters to default values:</span>
+<span class="sd">        # self.set_parameters(set_default=True)</span>
+
+<span class="sd">    #Define custom f1 score metric:</span>
+<span class="sd">    def xg_f1(self,y,t):</span>
+<span class="sd">        t = t.get_label()</span>
+<span class="sd">        y_bin = [1. if y_cont &gt; 0.5 else 0. for y_cont in y] # binaryzing your output</span>
+<span class="sd">        return &#39;f1&#39;,metrics.f1_score(t,y_bin)</span>
+
+<span class="sd">    # Set the parameters of the model. </span>
+<span class="sd">    # Note: </span>
+<span class="sd">    #    &gt; only the parameters to be updated are required to be passed</span>
+<span class="sd">    #    &gt; if set_default is True, the passed parameters are ignored and default parameters are set which are defined in   scikit learn module</span>
+<span class="sd">    def set_parameters(self, param=None, set_default=False):        </span>
+<span class="sd">        if set_default:</span>
+<span class="sd">            param = self.default_parameters</span>
+<span class="sd">            </span>
+<span class="sd">        self.alg.set_params(**param)</span>
+<span class="sd">        self.model_output.update(pd.Series(param))</span>
+
+<span class="sd">        if &#39;missing&#39; in param:</span>
+<span class="sd">            #update DMatrix with missing:</span>
+<span class="sd">            self.xgtrain = xgb.DMatrix(self.datablock.train[self.predictors].values, label=self.datablock.train[self.datablock.target].values, missing=param[&#39;missing&#39;])</span>
+<span class="sd">            self.xgtest = xgb.DMatrix(self.datablock.predict[self.predictors].values, missing=param[&#39;missing&#39;])</span>
+
+<span class="sd">        if &#39;num_class&#39; in param:</span>
+<span class="sd">            self.num_class = param[&#39;num_class&#39;]</span>
+
+<span class="sd">        if &#39;cv_folds&#39; in param:</span>
+<span class="sd">            self.cv_folds = param[&#39;cv_folds&#39;]</span>
+
+<span class="sd">    # def set_feature_importance(self):</span>
+<span class="sd">        </span>
+<span class="sd">    #    fs = self.alg.booster().get_fscore()</span>
+<span class="sd">    #    ftimp = pd.DataFrame({</span>
+<span class="sd">    #            &#39;feature&#39;: fs.keys(),</span>
+<span class="sd">    #            &#39;importance_Score&#39;: fs.values()</span>
+<span class="sd">    #        })</span>
+<span class="sd">    #    ftimp[&#39;predictor&#39;] = ftimp[&#39;feature&#39;].apply(lambda x: self.predictors[int(x[1:])])</span>
+<span class="sd">    #    self.feature_imp = pd.Series(ftimp[&#39;importance_Score&#39;].values, index=ftimp[&#39;predictor&#39;].values)</span>
+
+<span class="sd">    #Fit the model using predictors and parameters specified before.</span>
+<span class="sd">    # Inputs:</span>
+<span class="sd">    #    printCV - if True, CV is performed</span>
+<span class="sd">    def modelfit(self, performCV=True, useTrainCV=False, TrainCVFolds=5, early_stopping_rounds=20, show_progress=True, printTopN=&#39;all&#39;):</span>
+
+<span class="sd">        if useTrainCV:</span>
+<span class="sd">            xgb_param = self.alg.get_xgb_params()</span>
+<span class="sd">            if self.num_class&gt;2:</span>
+<span class="sd">                xgb_param[&#39;num_class&#39;]=self.num_class</span>
+<span class="sd">            if self.scoring_metric_xgb==&#39;f1&#39;:</span>
+<span class="sd">                cvresult = xgb.cv(xgb_param,self.xgtrain, num_boost_round=self.alg.get_params()[&#39;n_estimators&#39;], nfold=self.cv_folds,</span>
+<span class="sd">                 metrics=[&#39;auc&#39;],feval=self.xg_f1,early_stopping_rounds=early_stopping_rounds, show_progress=show_progress) </span>
+<span class="sd">            else:  </span>
+<span class="sd">                cvresult = xgb.cv(xgb_param,self.xgtrain, num_boost_round=self.alg.get_params()[&#39;n_estimators&#39;], nfold=self.cv_folds,</span>
+<span class="sd">                metrics=self.scoring_metric_xgb, early_stopping_rounds=early_stopping_rounds, show_progress=show_progress)</span>
+<span class="sd">            self.alg.set_params(n_estimators=cvresult.shape[0])</span>
+
+<span class="sd">        print(self.alg.get_params())</span>
+<span class="sd">        obj = self.alg.fit(self.datablock.train[self.predictors], self.datablock.train[self.datablock.target], eval_metric=self.eval_metric)</span>
+<span class="sd">        </span>
+<span class="sd">        #Print feature importance</span>
+<span class="sd">        # self.set_feature_importance()</span>
+<span class="sd">        self.feature_imp = pd.Series(self.alg.booster().get_fscore()).sort_values(ascending=False)</span>
+<span class="sd">        num_print = len(self.feature_imp)</span>
+<span class="sd">        if printTopN is not None:</span>
+<span class="sd">            if printTopN != &#39;all&#39;:</span>
+<span class="sd">                num_print = min(printTopN,len(self.feature_imp))</span>
+<span class="sd">            self.feature_imp.iloc[:num_print].plot(kind=&#39;bar&#39;, title=&#39;Feature Importances&#39;)</span>
+<span class="sd">            plt.ylabel(&#39;Feature Importance Score&#39;)</span>
+<span class="sd">            plt.show(block=False)</span>
+
+<span class="sd">        self.model_output[&#39;Feature_Importance&#39;] = self.feature_imp.to_string()</span>
+
+<span class="sd">        #Get train predictions:</span>
+<span class="sd">        self.train_predictions = self.alg.predict(self.datablock.train[self.predictors])</span>
+<span class="sd">        self.train_pred_prob = self.alg.predict_proba(self.datablock.train[self.predictors])</span>
+
+<span class="sd">        #Get test predictions:</span>
+<span class="sd">        self.test_predictions = self.alg.predict(self.datablock.predict[self.predictors])</span>
+<span class="sd">        self.test_pred_prob = self.alg.predict_proba(self.datablock.predict[self.predictors])</span>
+
+<span class="sd">        self.calc_model_characteristics(performCV)</span>
+<span class="sd">        self.printReport()</span>
+
+<span class="sd">    </span>
+<span class="sd">    #Export the model into the model file as well as create a submission with model index. This will be used for creating an ensemble.</span>
+<span class="sd">    def export_model(self, IDcol):</span>
+<span class="sd">        self.create_ensemble_dir()</span>
+<span class="sd">        filename = os.path.join(os.getcwd(),&#39;ensemble/xgboost_models.csv&#39;)</span>
+<span class="sd">        comb_series = self.classification_output.append(self.model_output, verify_integrity=True)</span>
+
+<span class="sd">        if os.path.exists(filename):</span>
+<span class="sd">            models = pd.read_csv(filename)</span>
+<span class="sd">            mID = int(max(models[&#39;ModelID&#39;])+1)</span>
+<span class="sd">        else:</span>
+<span class="sd">            mID = 1</span>
+<span class="sd">            models = pd.DataFrame(columns=comb_series.index)</span>
+<span class="sd">            </span>
+<span class="sd">        comb_series[&#39;ModelID&#39;] = mID</span>
+<span class="sd">        models = models.append(comb_series, ignore_index=True)</span>
+<span class="sd">        </span>
+<span class="sd">        models.to_csv(filename, index=False, float_format=&quot;%.5f&quot;)</span>
+<span class="sd">        model_filename = os.path.join(os.getcwd(),&#39;ensemble/xgboost_&#39;+str(mID)+&#39;.csv&#39;)</span>
+<span class="sd">        self.submission(IDcol, model_filename)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### ENSEMBLE (UNDER DEVELOPMENT)</span>
+<span class="c1">#####################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">#Class for creating an ensemble model using the exported files from previous classes</span>
+<span class="sd">class Ensemble_Classification(object):</span>
+<span class="sd">    #initialize the object with target variable</span>
+<span class="sd">    def __init__(self, target, IDcol):</span>
+<span class="sd">        self.datablock.target = target</span>
+<span class="sd">        self.data = None</span>
+<span class="sd">        self.relationMatrix_chi2 = None</span>
+<span class="sd">        self.relationMatrix_diff = None</span>
+<span class="sd">        self.IDcol = IDcol</span>
+
+<span class="sd">    #create the ensemble data</span>
+<span class="sd">    # Inputs:</span>
+<span class="sd">    #     models - dictionary with key as the model name and values as list containing the model numbers to be ensebled</span>
+<span class="sd">    # Note: all the models in the list specified should be present in the ensemble folder. Please cross-check once </span>
+<span class="sd">    def create_ensemble_data(self, models):</span>
+<span class="sd">        self.data = None</span>
+<span class="sd">        for key, value in models.items():</span>
+<span class="sd">            # print key,value</span>
+<span class="sd">            for i in value:</span>
+<span class="sd">                fname = key + &#39;_&#39; + str(i)</span>
+<span class="sd">                fpath = os.path.join(os.getcwd(), &#39;ensemble&#39;, fname+&#39;.csv&#39;)</span>
+<span class="sd">                tempdata = pd.read_csv(fpath)</span>
+<span class="sd">                tempdata = tempdata.rename(columns = {self.datablock.target: fname})</span>
+<span class="sd">                if self.data is None:</span>
+<span class="sd">                    self.data = tempdata</span>
+<span class="sd">                else:</span>
+<span class="sd">                    self.data = self.data.merge(tempdata,on=self.data.columns[0])</span>
+
+<span class="sd">    #get the data being used for ensemble</span>
+<span class="sd">    def get_ensemble_data(self):</span>
+<span class="sd">        return self.data</span>
+<span class="sd">    </span>
+<span class="sd">    #Check chisq test between different model outputs to check which combination of ensemble will generate better results. Note: Models with high correlation should not be combined together.</span>
+<span class="sd">    def chisq_independence(self, col1, col2, verbose = False):</span>
+<span class="sd">        contingencyTable = pd.crosstab(col1,col2,margins=True)</span>
+
+<span class="sd">        if len(col1)/((contingencyTable.shape[0] - 1) * (contingencyTable.shape[1] - 1)) &lt;= 5:</span>
+<span class="sd">            return &quot;TMC&quot;</span>
+
+<span class="sd">        expected = contingencyTable.copy()</span>
+<span class="sd">        total = contingencyTable.loc[&quot;All&quot;,&quot;All&quot;]</span>
+<span class="sd">        # print contingencyTable.index</span>
+<span class="sd">        # print contingencyTable.columns</span>
+<span class="sd">        for m in contingencyTable.index:</span>
+<span class="sd">            for n in contingencyTable.columns:</span>
+<span class="sd">                expected.loc[m,n] = contingencyTable.loc[m,&quot;All&quot;]*contingencyTable.loc[&quot;All&quot;,n]/float(total)</span>
+<span class="sd">        </span>
+<span class="sd">        if verbose:</span>
+<span class="sd">            print(&#39;\n\nAnalysis of models: %s and %s&#39; % (col1.name, col2.name))</span>
+<span class="sd">            print(&#39;Contingency Table:&#39;)</span>
+<span class="sd">            print(contingencyTable)</span>
+<span class="sd">            # print &#39;\nExpected Frequency Table:&#39;</span>
+<span class="sd">            # print expected</span>
+<span class="sd">        observed_frq = contingencyTable.iloc[:-1,:-1].values.ravel()</span>
+<span class="sd">        expected_frq = expected.iloc[:-1,:-1].values.ravel()</span>
+
+<span class="sd">        numless1 = len(expected_frq[expected_frq&lt;1])</span>
+<span class="sd">        perless5 = len(expected_frq[expected_frq&lt;5])/len(expected_frq)</span>
+
+<span class="sd">        #Adjustment in DOF so use the 1D chisquare to matrix shaped data; -1 in row n col because of All row and column</span>
+<span class="sd">        matrixadj = (contingencyTable.shape[0] - 1) + (contingencyTable.shape[1] - 1) - 2</span>
+<span class="sd">        # print matrixadj</span>
+<span class="sd">        pval = np.round(chisquare(observed_frq, expected_frq,ddof=matrixadj)[1],3)</span>
+
+<span class="sd">        if numless1&gt;0 or perless5&gt;=0.2:</span>
+<span class="sd">            return str(pval)+&quot;*&quot;</span>
+<span class="sd">        else: </span>
+<span class="sd">            return pval</span>
+
+<span class="sd">    #Create the relational matrix between models</span>
+<span class="sd">    def check_ch2(self, verbose=False):</span>
+<span class="sd">        col = self.data.columns[1:]</span>
+<span class="sd">        self.relationMatrix_chi2 = pd.DataFrame(index=col,columns=col)</span>
+
+<span class="sd">        for i in range(len(col)):</span>
+<span class="sd">            for j in range(i, len(col)):</span>
+<span class="sd">                if i==j:</span>
+<span class="sd">                    self.relationMatrix_chi2.loc[col[i],col[j]] = 1</span>
+<span class="sd">                else:</span>
+<span class="sd">                    pval = self.chisq_independence(self.data.iloc[:,i+1],self.data.iloc[:,j+1], verbose=verbose)</span>
+<span class="sd">                    self.relationMatrix_chi2.loc[col[j],col[i]] = pval</span>
+<span class="sd">                    self.relationMatrix_chi2.loc[col[i],col[j]] = pval</span>
+
+<span class="sd">        print(&#39;\n\n Relational Matrix (based on Chi-square test):&#39;)</span>
+<span class="sd">        print(self.relationMatrix_chi2)</span>
+
+<span class="sd">    def check_diff(self):</span>
+<span class="sd">        col = self.data.columns[1:]</span>
+<span class="sd">        self.relationMatrix_diff = pd.DataFrame(index=col,columns=col)</span>
+<span class="sd">        nrow = self.data.shape[0]</span>
+<span class="sd">        for i in range(len(col)):</span>
+<span class="sd">            for j in range(i, len(col)):</span>
+<span class="sd">                if i==j:</span>
+<span class="sd">                    self.relationMatrix_diff.loc[col[i],col[j]] = &#39;-&#39;</span>
+<span class="sd">                else:</span>
+<span class="sd">                    # print col[i],col[j]</span>
+<span class="sd">                    pval = &quot;{0:.2%}&quot;.format(sum( np.abs(self.data.iloc[:,i+1]-self.data.iloc[:,j+1]) )/float(nrow))</span>
+<span class="sd">                    self.relationMatrix_diff.loc[col[j],col[i]] = pval</span>
+<span class="sd">                    self.relationMatrix_diff.loc[col[i],col[j]] = pval</span>
+
+<span class="sd">        print(&#39;\n\n Relational Matrix (based on perc difference):&#39;)</span>
+<span class="sd">        print(self.relationMatrix_diff)</span>
+
+
+<span class="sd">    #Generate submission for the ensembled model by combining the mentioned models.</span>
+<span class="sd">    # Inputs:</span>
+<span class="sd">    #     models_to_use - list with model names to use; if None- all models will be used</span>
+<span class="sd">    #     filename - the filename of the final submission</span>
+<span class="sd">    #     Note: the models should be odd in nucmber to allow a clear winner in terms of mode otherwise the first element will be chosen </span>
+<span class="sd">    def submission(self, models_to_use=None, filename=&quot;Submission_ensemble.csv&quot;):</span>
+
+<span class="sd">        #if models_to_use is None then use all, else filter:</span>
+<span class="sd">        if models_to_use is None:</span>
+<span class="sd">            data_ens = self.data</span>
+<span class="sd">        else:</span>
+<span class="sd">            data_ens = self.data[models_to_use]</span>
+
+<span class="sd">        def mode_ens(x):</span>
+<span class="sd">            return int(mode(x).mode[0])</span>
+
+<span class="sd">        ensemble_output = data_ens.apply(mode_ens,axis=1)</span>
+<span class="sd">        submission = pd.DataFrame({</span>
+<span class="sd">                self.IDcol: self.data.iloc[:,0],</span>
+<span class="sd">                self.datablock.target: ensemble_output</span>
+<span class="sd">            })</span>
+<span class="sd">        submission.to_csv(filename, index=False)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Aarshay Jain.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1.0al',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

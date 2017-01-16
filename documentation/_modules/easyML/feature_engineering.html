@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>easyML.feature_engineering &mdash; easyML 0.1.0al documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="easyML 0.1.0al documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> easyML
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">easyML</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>easyML.feature_engineering</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for easyML.feature_engineering</h1><div class="highlight"><pre>
+<span></span><span class="c1">#####################################################################</span>
+<span class="c1">##### IMPORT STANDARD MODULES</span>
+<span class="c1">#####################################################################</span>
+
+<span class="c1">#Python 3 support:</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">mode</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">.base_class</span> <span class="k">import</span> <span class="n">BaseClass</span>
+<span class="kn">from</span> <span class="nn">.data</span> <span class="k">import</span> <span class="n">DataBlock</span>
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### DEFINE PREPROCESS CLASS</span>
+<span class="c1">#####################################################################</span>
+
+<div class="viewcode-block" id="FeatureEngineering"><a class="viewcode-back" href="../../feature_engineering.html#easyML.feature_engineering.FeatureEngineering">[docs]</a><span class="k">class</span> <span class="nc">FeatureEngineering</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A feature engineering module which helps you create new features</span>
+<span class="sd">    into the data using the easy-to-use built-in modules. The features</span>
+<span class="sd">    are created on all 3 of the dataframes in datablock simultaneously.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_block : object of type DataBlock</span>
+<span class="sd">        An object of easyML&#39;s DataBlock class. You should first create an </span>
+<span class="sd">        object of that class and then pass it as a parameter.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datablock : object of type DataBlock</span>
+<span class="sd">        The pre-processed data containing all the modifications made </span>
+<span class="sd">        using the module&#39;s methods</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_block</span><span class="p">):</span>
+
+        <span class="c1">#check if data element is of class datablock</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">data_block</span><span class="p">,</span><span class="s1">&#39;data_block&#39;</span><span class="p">,</span><span class="n">DataBlock</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span> <span class="o">=</span> <span class="n">data_block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span>        <span class="c1">#though redundant but will make code mode readable</span>
+
+        <span class="c1">#get tuple of available data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">data_present</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
+    
+<div class="viewcode-block" id="FeatureEngineering.create_bins"><a class="viewcode-back" href="../../feature_engineering.html#easyML.feature_engineering.FeatureEngineering.create_bins">[docs]</a>    <span class="k">def</span> <span class="nf">create_bins</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span><span class="n">column</span><span class="p">,</span> <span class="n">cut_points</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_bin&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Used to create a categorical feature from a numeric feature by </span>
+<span class="sd">        binning specific ranges of numbers together. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        column : str </span>
+<span class="sd">            This represents the column on which the function is to be applied</span>
+
+<span class="sd">        cut_points : list of num </span>
+<span class="sd">            This represents a list of numbers at which the data has to be </span>
+<span class="sd">            cut. For example, an input [5,10] will divide the column into 3 </span>
+<span class="sd">            categories: [(-inf,5],(5,10],(10,inf)] </span>
+<span class="sd">        </span>
+<span class="sd">        labels : list of str or None, default=None</span>
+<span class="sd">            User-defined labels for the resulting category in increasing </span>
+<span class="sd">            order. The length of the list should be 1 more than the length </span>
+<span class="sd">            of cuts_points. </span>
+<span class="sd">            If None, then default labels are 0, 1, ..., n-1. Note that an </span>
+<span class="sd">            object type feature is formed if custom labels provided, </span>
+<span class="sd">            otherwise the returned columns is of type numeric by default.</span>
+
+<span class="sd">        inplace : bool, default=True </span>
+<span class="sd">            If True, then the original column in the data will be modified.</span>
+<span class="sd">            If False, then a new column will be created with a suffix as </span>
+<span class="sd">            specified by suffix parameter.</span>
+
+<span class="sd">        suffix : str, default=&#39;_bin&#39;</span>
+<span class="sd">            If inplace argument is False, then this is the suffix applied to</span>
+<span class="sd">            the column name to creat a new column. </span>
+<span class="sd">            Note that if such a column already exists, it will be overwritten</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#check:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">column</span><span class="p">,</span><span class="s1">&#39;column&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">cut_points</span><span class="p">,</span><span class="s1">&#39;cut_points&#39;</span><span class="p">,</span><span class="nb">list</span><span class="p">)</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span><span class="s1">&#39;inplace&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span><span class="s1">&#39;suffix&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span> 
+
+        <span class="k">if</span> <span class="n">labels</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="s1">&#39;labels&#39;</span><span class="p">,</span><span class="nb">list</span><span class="p">)</span> 
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cut_points</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="s2">&quot;Length of labels (</span><span class="si">%d</span><span class="s2">) should be 1 more than the length of cut_points (</span><span class="si">%d</span><span class="s2">)&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">cut_points</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">subset_check</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+        
+        <span class="c1">#Define tag for converting to numeric:</span>
+        <span class="n">change_to_num</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1">#Define min and max values:</span>
+        <span class="n">min_val</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">])</span>
+        <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">])</span>
+
+        <span class="c1">#create list by adding min and max to cut_points</span>
+        <span class="n">break_points</span> <span class="o">=</span> <span class="p">[</span><span class="n">min_val</span><span class="p">]</span> <span class="o">+</span> <span class="n">cut_points</span> <span class="o">+</span> <span class="p">[</span><span class="n">max_val</span><span class="p">]</span>
+
+        <span class="c1">#if no labels provided, use default labels 0 ... (n-1)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">labels</span><span class="p">:</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cut_points</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">change_to_num</span><span class="o">=</span><span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+                <span class="n">new_var</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_var</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">column</span><span class="p">,</span><span class="n">suffix</span><span class="p">])</span>
+        
+        <span class="c1">#Bin all datasets:</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">break_points</span><span class="p">,</span>
+                        <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">include_lowest</span><span class="o">=</span><span class="kc">True</span>
+                        <span class="p">)</span>
+            <span class="k">if</span> <span class="n">change_to_num</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="FeatureEngineering.combine_categories"><a class="viewcode-back" href="../../feature_engineering.html#easyML.feature_engineering.FeatureEngineering.combine_categories">[docs]</a>    <span class="k">def</span> <span class="nf">combine_categories</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span><span class="n">column</span><span class="p">,</span> <span class="n">combine_dict</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_combined&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Used to comine categories of a categorical feature. </span>
+<span class="sd">        Note that only the categories specified in the combine_dict will be </span>
+<span class="sd">        changed and rest all will remain as it is.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        column : str </span>
+<span class="sd">            This represents the column on which the function is to be applied</span>
+
+<span class="sd">        combine_dict : dict</span>
+<span class="sd">            This represents the replacement dictionary of the form </span>
+<span class="sd">            {&#39;new_categories&#39;:[list of old categories]} where the dictionary </span>
+<span class="sd">            keys represents the new categories to be created and the values </span>
+<span class="sd">            represent the old categories which are to be combined to get the </span>
+<span class="sd">            new one. </span>
+<span class="sd">            For example, {&#39;d&#39;:[&#39;a&#39;,&#39;b&#39;,&#39;c&#39;]} will combine all &#39;a&#39;,&#39;b&#39;,&#39;c&#39; to </span>
+<span class="sd">            give just 1 category &#39;d&#39;, which might be a pre-existing category </span>
+<span class="sd">            or a new one.</span>
+
+<span class="sd">        inplace : bool, default=True </span>
+<span class="sd">            If True, then the original column in the data will be modified.</span>
+<span class="sd">            If False, then a new column will be created with a suffix as </span>
+<span class="sd">            specified by suffix parameter.</span>
+
+<span class="sd">        suffix : str, default=&#39;_combined&#39;</span>
+<span class="sd">            If inplace argument is False, then this is the suffix applied to</span>
+<span class="sd">            the column name to creat a new column. </span>
+<span class="sd">            Note that if such a column already exists, it will be overwritten</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#check:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">column</span><span class="p">,</span><span class="s1">&#39;column&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">combine_dict</span><span class="p">,</span><span class="s1">&#39;combine_dict&#39;</span><span class="p">,</span><span class="nb">dict</span><span class="p">)</span>     
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span><span class="s1">&#39;inplace&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span><span class="s1">&#39;suffix&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span> 
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">subset_check</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+
+        <span class="c1">#Check each value is a list:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_list_type</span><span class="p">(</span>
+                <span class="n">combine_dict</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span><span class="nb">list</span><span class="p">,</span>
+                <span class="s2">&quot;Each value of the combine_dict should be a list&quot;</span><span class="p">)</span>
+
+        <span class="n">replace_dict</span><span class="o">=</span><span class="p">{}</span>
+        <span class="c1">#dictionary comprehension to form a reverse dictionary with keys as </span>
+        <span class="c1">#the old value and value as new value.</span>
+        <span class="p">[</span><span class="n">replace_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">val</span><span class="p">:</span><span class="n">key</span><span class="p">})</span> 
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">values</span> <span class="ow">in</span> <span class="n">combine_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> 
+                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+                <span class="n">new_var</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_var</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">column</span><span class="p">,</span><span class="n">suffix</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">replace_dict</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Aarshay Jain.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1.0al',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

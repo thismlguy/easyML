@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Feature Engineering Module &mdash; easyML 0.1.0al documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="easyML 0.1.0al documentation" href="index.html"/>
+        <link rel="up" title="API Documentation" href="api.html"/>
+        <link rel="next" title="Classification Models" href="classification.html"/>
+        <link rel="prev" title="Pre-Processing Module" href="preprocess.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> easyML
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="datablock.html">DataBlock Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocess.html">Pre-Processing Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Feature Engineering Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#upcoming-features">Upcoming Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class-structure">Class Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="classification.html">Classification Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#notes">Notes</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">easyML</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="api.html">API Documentation</a> &raquo;</li>
+      
+    <li>Feature Engineering Module</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/feature_engineering.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="feature-engineering-module">
+<h1>Feature Engineering Module<a class="headerlink" href="#feature-engineering-module" title="Permalink to this headline">¶</a></h1>
+<p>The feature engineering module is designed to help you create featurs in your data which can potentially boost your model performance. Feture Engineering is a key element in the predictive modeling process.</p>
+<div class="section" id="upcoming-features">
+<h2>Upcoming Features<a class="headerlink" href="#upcoming-features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>One-Hot-Encoding or creating dummy variables</li>
+<li>Count features</li>
+<li>Interaction features</li>
+<li>Polynomial features</li>
+<li>Transformations</li>
+<li>Row statistics</li>
+<li>Bayesian features</li>
+<li>tSNE feature</li>
+</ul>
+</div>
+<div class="section" id="class-structure">
+<h2>Class Structure<a class="headerlink" href="#class-structure" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="class">
+<dt id="easyML.feature_engineering.FeatureEngineering">
+<em class="property">class </em><code class="descclassname">easyML.feature_engineering.</code><code class="descname">FeatureEngineering</code><span class="sig-paren">(</span><em>data_block</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/feature_engineering.html#FeatureEngineering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.feature_engineering.FeatureEngineering" title="Permalink to this definition">¶</a></dt>
+<dd><p>A feature engineering module which helps you create new features
+into the data using the easy-to-use built-in modules. The features
+are created on all 3 of the dataframes in datablock simultaneously.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_block</strong> : object of type DataBlock</p>
+<blockquote class="last">
+<div><p>An object of easyML&#8217;s DataBlock class. You should first create an 
+object of that class and then pass it as a parameter.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>datablock</td>
+<td>(object of type DataBlock) The pre-processed data containing all the modifications made using the module&#8217;s methods</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="easyML.feature_engineering.FeatureEngineering.create_bins">
+<code class="descname">create_bins</code><span class="sig-paren">(</span><em>column</em>, <em>cut_points</em>, <em>labels=None</em>, <em>inplace=True</em>, <em>suffix=u'_bin'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/feature_engineering.html#FeatureEngineering.create_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.feature_engineering.FeatureEngineering.create_bins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to create a categorical feature from a numeric feature by 
+binning specific ranges of numbers together.</p>
+<dl class="docutils">
+<dt>column</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str </span><dd>This represents the column on which the function is to be applied</dd>
+<dt>cut_points</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list of num </span><dd>This represents a list of numbers at which the data has to be 
+cut. For example, an input [5,10] will divide the column into 3 
+categories: [(-inf,5],(5,10],(10,inf)]</dd>
+<dt>labels</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list of str or None, default=None</span><dd>User-defined labels for the resulting category in increasing 
+order. The length of the list should be 1 more than the length 
+of cuts_points. 
+If None, then default labels are 0, 1, ..., n-1. Note that an 
+object type feature is formed if custom labels provided, 
+otherwise the returned columns is of type numeric by default.</dd>
+<dt>inplace</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, then the original column in the data will be modified.
+If False, then a new column will be created with a suffix as 
+specified by suffix parameter.</dd>
+<dt>suffix</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_bin&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+the column name to creat a new column. 
+Note that if such a column already exists, it will be overwritten</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="easyML.feature_engineering.FeatureEngineering.combine_categories">
+<code class="descname">combine_categories</code><span class="sig-paren">(</span><em>column</em>, <em>combine_dict</em>, <em>inplace=True</em>, <em>suffix=u'_combined'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/feature_engineering.html#FeatureEngineering.combine_categories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.feature_engineering.FeatureEngineering.combine_categories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to comine categories of a categorical feature. 
+Note that only the categories specified in the combine_dict will be 
+changed and rest all will remain as it is.</p>
+<dl class="docutils">
+<dt>column</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str </span><dd>This represents the column on which the function is to be applied</dd>
+<dt>combine_dict</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">dict</span><dd>This represents the replacement dictionary of the form 
+{&#8216;new_categories&#8217;:[list of old categories]} where the dictionary 
+keys represents the new categories to be created and the values 
+represent the old categories which are to be combined to get the 
+new one. 
+For example, {&#8216;d&#8217;:[&#8216;a&#8217;,&#8217;b&#8217;,&#8217;c&#8217;]} will combine all &#8216;a&#8217;,&#8217;b&#8217;,&#8217;c&#8217; to 
+give just 1 category &#8216;d&#8217;, which might be a pre-existing category 
+or a new one.</dd>
+<dt>inplace</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, then the original column in the data will be modified.
+If False, then a new column will be created with a suffix as 
+specified by suffix parameter.</dd>
+<dt>suffix</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_combined&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+the column name to creat a new column. 
+Note that if such a column already exists, it will be overwritten</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classification.html" class="btn btn-neutral float-right" title="Classification Models" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="preprocess.html" class="btn btn-neutral" title="Pre-Processing Module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Aarshay Jain.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0al',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,689 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>easyML.preprocess &mdash; easyML 0.1.0al documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="easyML 0.1.0al documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> easyML
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">easyML</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>easyML.preprocess</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for easyML.preprocess</h1><div class="highlight"><pre>
+<span></span><span class="c1">#####################################################################</span>
+<span class="c1">##### IMPORT STANDARD MODULES</span>
+<span class="c1">#####################################################################</span>
+
+<span class="c1">#Python 3 support:</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="c1"># %matplotlib inline    #only valid for iPython notebook</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">mode</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">.base_class</span> <span class="k">import</span> <span class="n">BaseClass</span>
+<span class="kn">from</span> <span class="nn">.data</span> <span class="k">import</span> <span class="n">DataBlock</span>
+
+<span class="c1">#####################################################################</span>
+<span class="c1">##### DEFINE PREPROCESS CLASS</span>
+<span class="c1">#####################################################################</span>
+
+<div class="viewcode-block" id="PreProcess"><a class="viewcode-back" href="../../preprocess.html#easyML.preprocess.PreProcess">[docs]</a><span class="k">class</span> <span class="nc">PreProcess</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A preprocessing modules which helps you preprocess you data</span>
+<span class="sd">    using the easy-to-use built-in modules. The preprocessing is </span>
+<span class="sd">    done on all 3 of the dataframes in datablock simultaneously.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_block : object of type DataBlock</span>
+<span class="sd">        An object of easyML&#39;s DataBlock class. You should first create an </span>
+<span class="sd">        object of that class and then pass it as a parameter.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datablock : object of type DataBlock</span>
+<span class="sd">        The pre-processed data containing all the modifications made </span>
+<span class="sd">        using the module&#39;s methods</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_block</span><span class="p">):</span>
+
+        <span class="c1">#check if data element is of class datablock</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">data_block</span><span class="p">,</span><span class="s1">&#39;data_block&#39;</span><span class="p">,</span><span class="n">DataBlock</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span> <span class="o">=</span> <span class="n">data_block</span>
+        <span class="c1">#though redundant but will make code mode readable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">target</span>
+
+        <span class="c1">#get tuple of available data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">data_present</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
+<div class="viewcode-block" id="PreProcess.check_missing"><a class="viewcode-back" href="../../preprocess.html#easyML.preprocess.PreProcess.check_missing">[docs]</a>    <span class="k">def</span> <span class="nf">check_missing</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">printResult</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">returnSeries</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Checks the missing values in the all dataframes. </span>
+<span class="sd">        The target column in the predict variable will not be </span>
+<span class="sd">        checked here because it is assumed to have all missing values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        subset : list of str or None, default=None</span>
+<span class="sd">            A list specifying the subset of columns in which the missing</span>
+<span class="sd">            values are to be checked.</span>
+<span class="sd">            If None, all columns checked</span>
+
+<span class="sd">        printResult : bool, default=True </span>
+<span class="sd">            if True, the result will be printed</span>
+
+<span class="sd">        returnSeries : bool, default=False </span>
+<span class="sd">            if True, the function will return a tuple of 3 objects each one </span>
+<span class="sd">            being a pandas Series with index as the column name and value as </span>
+<span class="sd">            the number of missing values in the column</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        _______</span>
+<span class="sd">        missing_values : tuple with 3 elements</span>
+<span class="sd">            Returns a tuple of 3 pandas series objects pertaining to the </span>
+<span class="sd">            train, test and predict dataframes. Each series has index as the</span>
+<span class="sd">            name of the columns having missing values and values as the</span>
+<span class="sd">            number of missing values in the column.</span>
+<span class="sd">            Returns (None,None,None) if no missing values found.</span>
+<span class="sd">            Nothing is returned is returnSeries argument is False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#Check if subset is actually a subset of the parameters or not:</span>
+        <span class="k">if</span> <span class="n">subset</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subset_check</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">subset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">columns</span>
+
+        <span class="n">check_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+            <span class="n">miss_val</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">subset</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">isnull</span><span class="p">()))</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">==</span><span class="s1">&#39;predict&#39;</span><span class="p">:</span>
+                <span class="c1">#Remove target index if present:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="ow">in</span> <span class="n">miss_val</span><span class="p">:</span>
+                    <span class="n">miss_val</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">check_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">miss_val</span>
+
+        <span class="k">if</span> <span class="n">printResult</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">df</span><span class="p">,</span><span class="n">miss</span> <span class="ow">in</span> <span class="n">check_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">miss</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">No missing value found in </span><span class="si">%s</span><span class="s1"> dataframe&#39;</span><span class="o">%</span><span class="n">df</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\n</span><span class="s1">Total </span><span class="si">%d</span><span class="s1"> missing values found in </span><span class="si">%s</span><span class="s1"> dataframe </span>
+<span class="s1">                        in following columns:&#39;&#39;&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">miss</span><span class="p">),</span><span class="n">df</span><span class="p">))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                                <span class="n">miss</span><span class="p">[</span><span class="n">miss</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">],</span>
+                                <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Num Missing Values&#39;</span><span class="p">])</span>
+                    <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">returnSeries</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">miss_train</span><span class="p">,</span> <span class="n">miss_test</span><span class="p">,</span> <span class="n">miss_predict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PreProcess.imputation"><a class="viewcode-back" href="../../preprocess.html#easyML.preprocess.PreProcess.imputation">[docs]</a>    <span class="k">def</span> <span class="nf">imputation</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">groupby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">constant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+            <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_imputed&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Used to performs imputation on a column. The imputation is </span>
+<span class="sd">        performed on all dataframes together. For instance, if a median imputation is performed, then median of the train dataframe is </span>
+<span class="sd">        determined and the same value used to impute the test and predict</span>
+<span class="sd">        dataframes as well.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        column : str</span>
+<span class="sd">            The name of the column to be imputed.</span>
+
+<span class="sd">        metric : str or None, default=None </span>
+<span class="sd">            The metric to be used for imputation. Possible options:</span>
+<span class="sd">            - mean: impute with column mean (only for numeric columns)</span>
+<span class="sd">            - median: impute with column median; default for numeric data </span>
+<span class="sd">            (only for numeric columns) </span>
+<span class="sd">            - mode: impute with column model default for non-numeric data </span>
+<span class="sd">            (only for non-numeric columns)</span>
+<span class="sd">        </span>
+<span class="sd">        groupby : str or list of str or None, default=None </span>
+<span class="sd">            The list of columns by which the metric is to be grouped for </span>
+<span class="sd">            imputation. Note that these columns should not have any misssing </span>
+<span class="sd">            values.</span>
+
+<span class="sd">        constant : no constraint, default=None </span>
+<span class="sd">            To be used if a constant user-defined value is to be used for </span>
+<span class="sd">            imputation. This is ignored if metric is not None.</span>
+
+<span class="sd">        inplace : bool, default=True </span>
+<span class="sd">            If True, then the original column in the data will be imputed. </span>
+<span class="sd">            If False, then a new column will be created with a suffix as </span>
+<span class="sd">            specified by suffix parameter. This can be used to test </span>
+<span class="sd">            different imputation metrics.</span>
+
+<span class="sd">        suffix : str, default=&#39;_imputed&#39;</span>
+<span class="sd">            If inplace argument is False, then this is the suffix applied to</span>
+<span class="sd">            the column name to creat a new column. </span>
+<span class="sd">            Note that if such a column already exists, it will be overwritten</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#Perform checks:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">column</span><span class="p">,</span><span class="s1">&#39;column&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">metric</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_value_in_range</span><span class="p">(</span>
+                <span class="n">metric</span><span class="p">,</span>
+                <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="s1">&#39;mediam&#39;</span><span class="p">,</span><span class="s1">&#39;mode&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;The metric can only be &quot;mean&quot;,&quot;median&quot; or &quot;mode&quot;, found </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">metric</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span><span class="s1">&#39;inplace&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span><span class="s1">&#39;suffix&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span> 
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">subset_check</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">groupby</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">subset_check</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">]):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The groupby column </span><span class="si">%s</span><span class="s1"> contains missing values. Please impute that first.&#39;</span><span class="o">%</span><span class="n">col</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="n">new_var</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_var</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">column</span><span class="p">,</span><span class="n">suffix</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">update_column_list</span><span class="p">()</span>
+
+        <span class="c1"># If constant value passed, then exit the function with that </span>
+        <span class="c1"># imputation</span>
+        <span class="k">if</span> <span class="n">constant</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Missing values being imputed with the constant value passed in metrics argument&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1">#Define a function to impute by groups if such selected</span>
+        <span class="k">def</span> <span class="nf">fill_grps</span><span class="p">(</span><span class="n">impute_grps</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                                    <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">(),</span>
+                                    <span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">+</span><span class="n">groupby</span>
+                                <span class="p">]</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">groupby</span><span class="p">])</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">impute_grps</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+        
+        <span class="c1">#Case1: continuous column</span>
+        <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">numeric_columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">metric</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="s1">&#39;median&#39;</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;metric can only be mean or median for numeric column&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;median&#39;</span>
+
+            <span class="c1">#check constant input:</span>
+            <span class="c1">#Impute by mean:</span>
+            <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;mean&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">groupby</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1">#impute groups to be determined on basis of train data</span>
+                    <span class="c1">#only not any other data</span>
+                    <span class="n">impute_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
+                        <span class="n">values</span><span class="o">=</span><span class="n">column</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> 
+                        <span class="n">fill_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+                        <span class="p">)</span>
+                    <span class="n">fill_grps</span><span class="p">(</span><span class="n">impute_grps</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">impute_val</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">impute_val</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            
+            <span class="c1">#Impute by median:</span>
+            <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;median&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">groupby</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1">#impute groups to be determined on basis of train data</span>
+                    <span class="c1">#only not any other data</span>
+                    <span class="n">impute_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
+                        <span class="n">values</span><span class="o">=</span><span class="n">column</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> 
+                        <span class="n">fill_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+                        <span class="p">)</span>
+                    <span class="n">fill_grps</span><span class="p">(</span><span class="n">impute_grps</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">impute_val</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">impute_val</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1">#Case2: Categorical variable:</span>
+        <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">other_columns</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">metric</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;metric can only be mode for non-numeric column&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;mode&#39;</span>
+
+            <span class="c1">#Define the custom functino to determine the mode using scipy&#39;s </span>
+            <span class="c1">#mode function</span>
+            <span class="k">def</span> <span class="nf">cust_mode</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">mode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1">#Impute by mode:</span>
+            <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;mode&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">groupby</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1">#impute groups to be determined on basis of train data</span>
+                    <span class="c1">#only not any other data</span>
+                    <span class="n">impute_grps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
+                        <span class="n">values</span><span class="o">=</span><span class="n">column</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">groupby</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="n">cust_mode</span><span class="p">,</span> 
+                        <span class="n">fill_value</span><span class="o">=</span><span class="n">cust_mode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="n">column</span><span class="p">])</span>
+                        <span class="p">)</span>
+                    <span class="n">fill_grps</span><span class="p">(</span><span class="n">impute_grps</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">impute_val</span> <span class="o">=</span> <span class="n">cust_mode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">train</span><span class="p">[</span><span class="n">column</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">impute_val</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PreProcess.scale"><a class="viewcode-back" href="../../preprocess.html#easyML.preprocess.PreProcess.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">subset</span><span class="p">,</span><span class="n">scale_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_scaled&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Used to scale the data within a fixed range of values. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        subset : str or list of str</span>
+<span class="sd">            This represents the columns to be scaled. 2 options:</span>
+<span class="sd">            - str: a single column to be scaled</span>
+<span class="sd">            - list of str: list of multiple columns to be scaled</span>
+
+<span class="sd">        scale_range : tuple or dictionary, default=(0,1)</span>
+<span class="sd">            This represents the range to which the data is to be scaled. </span>
+<span class="sd">            2 options:</span>
+<span class="sd">            - tuple (min,mex): fixed range for all columns mentioned in subset</span>
+<span class="sd">            - dictionary : a dictionary with keys as columns mentioned in </span>
+<span class="sd">            subset list and values as the range to which that column is to </span>
+<span class="sd">            be scaled. Note that this works only if subset is entered as a </span>
+<span class="sd">            list of strings</span>
+
+<span class="sd">        inplace : bool, default=True </span>
+<span class="sd">            If True, the dataframes will be modified and columns scaled. </span>
+<span class="sd">            If False, new columns will be created with suffix as specified </span>
+<span class="sd">            in suffix parameter</span>
+<span class="sd">        </span>
+<span class="sd">        suffix : str, default=&#39;_scaled&#39;</span>
+<span class="sd">            If inplace argument is False, then this is the suffix applied to</span>
+<span class="sd">            the column name to creat a new column. </span>
+<span class="sd">            Note that if such a column already exists, it will be overwritten</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#check:</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype2</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span><span class="s1">&#39;subset&#39;</span><span class="p">,(</span><span class="n">basestring</span><span class="p">,</span><span class="nb">list</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype2</span><span class="p">(</span><span class="n">scale_range</span><span class="p">,</span><span class="s1">&#39;scale_range&#39;</span><span class="p">,(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">dict</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span><span class="s1">&#39;inplace&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span><span class="s1">&#39;suffix&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span> <span class="c1">#basestring works for both python2 and python3</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">subset_check</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="n">subset</span> <span class="o">=</span> <span class="p">[</span><span class="n">subset</span><span class="p">]</span>
+        
+        <span class="c1">#Iterate over all columns and scale them:</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">subset</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale_range</span><span class="p">,</span><span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">scale_range</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">scale_range</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> not found in the dictionary range&quot;</span><span class="o">%</span><span class="n">column</span><span class="p">)</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">scale_range</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+
+            <span class="c1">#check each tuple of size 2:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidInput</span><span class="p">(</span><span class="s2">&quot;range should contain tuples of fixed size 2. tuple of size </span><span class="si">%d</span><span class="s2"> found&quot;</span><span class="o">%</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+
+            <span class="c1">#check second element always greater than the first</span>
+            <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="n">InvalidInput</span><span class="p">(</span><span class="s2">&quot;each range tuple should be of form (min,max) where min&lt;max&quot;</span><span class="p">)</span>
+
+            <span class="c1">#</span>
+            <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+                <span class="n">new_var</span> <span class="o">=</span> <span class="n">column</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_var</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">column</span><span class="p">,</span><span class="n">suffix</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+            
+            <span class="c1">#Get min and max values:</span>
+            <span class="n">min_val</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">])</span>
+            <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">])</span>
+
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">-</span> <span class="n">min_val</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">max_val</span> <span class="o">-</span> <span class="n">min_val</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1">#Update the list of columns if inplace False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">update_column_list</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PreProcess.normalize"><a class="viewcode-back" href="../../preprocess.html#easyML.preprocess.PreProcess.normalize">[docs]</a>    <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">subset</span><span class="p">,</span><span class="n">norm</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_norm&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Used to normalize the data using an l1 or l2 normalization. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        subset : list of str </span>
+<span class="sd">            This represents the columns to be normalized. Input should be a </span>
+<span class="sd">            list of columns.</span>
+<span class="sd">        </span>
+<span class="sd">        norm : str (&#39;l1&#39; or &#39;l2&#39;), default=&#39;l2&#39;</span>
+<span class="sd">            This specifies the type or normalization- l1 or l2</span>
+
+<span class="sd">        inplace : bool, default=True </span>
+<span class="sd">            If True, the dataframes will be modified and columns normalized. </span>
+<span class="sd">            If False, new columns will be created with suffix as specified </span>
+<span class="sd">            in suffix parameter</span>
+<span class="sd">        </span>
+<span class="sd">        suffix : str, default=&#39;_norm&#39;</span>
+<span class="sd">            If inplace argument is False, then this is the suffix applied to</span>
+<span class="sd">            the column name to creat a new column. </span>
+<span class="sd">            Note that if such a column already exists, it will be overwritten</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#check:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span><span class="s1">&#39;subset&#39;</span><span class="p">,</span><span class="nb">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">norm</span><span class="p">,</span><span class="s1">&#39;norm&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span>     <span class="c1">#basestring works for both python2 and python3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span><span class="s1">&#39;inplace&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span><span class="s1">&#39;suffix&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span> <span class="c1">#basestring works for both python2 and python3</span>
+
+        <span class="k">if</span> <span class="n">norm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;l1&#39;</span><span class="p">,</span><span class="s1">&#39;l2&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="s2">&quot;norm can only take values &#39;l1&#39; or &#39;l2&#39;, found </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">norm</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subset_check</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
+
+        <span class="c1">#Iterate over all columns and scale them:</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">subset</span><span class="p">:</span>
+
+            <span class="c1">#Check if column contains a missing value</span>
+            <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">())</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="s2">&quot;The </span><span class="si">%s</span><span class="s2"> column contains missing values, please impute first!&quot;</span><span class="o">%</span><span class="n">column</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+                <span class="n">new_var</span> <span class="o">=</span> <span class="n">column</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_var</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">column</span><span class="p">,</span><span class="n">suffix</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+            
+            <span class="c1">#Get min and max values:</span>
+            <span class="k">if</span> <span class="n">norm</span><span class="o">==</span><span class="s1">&#39;l1&#39;</span><span class="p">:</span>
+                <span class="n">divisor</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">sum</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]])</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">divisor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="nb">sum</span><span class="p">([</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]])</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">]))</span>
+
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">/</span> <span class="n">divisor</span>
+
+        <span class="c1">#Update the list of columns if inplace False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">update_column_list</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PreProcess.apply"><a class="viewcode-back" href="../../preprocess.html#easyML.preprocess.PreProcess.apply">[docs]</a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">rowwise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_modified&#39;</span><span class="p">,</span> <span class="n">combine_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Used to apply any function on the data to allow flexibility in </span>
+<span class="sd">        preprocessing part by incorporating functions not directly included </span>
+<span class="sd">        in this package. Note that your function should be able to handle </span>
+<span class="sd">        missing values in data if they exist. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        __________</span>
+<span class="sd">        column : str </span>
+<span class="sd">            This represents the column on which the function is to be applied</span>
+
+<span class="sd">        func : pre-defined function </span>
+<span class="sd">            A function which can be of 2 types:</span>
+<span class="sd">            1. Takes a single value as input and returns a single value. </span>
+<span class="sd">            This function will be applied to each observation independently </span>
+<span class="sd">            and applicable if rowwise=True</span>
+<span class="sd">            2. Takes a list of numbers as input and returns a list of same </span>
+<span class="sd">            size. This will be applied to entire column at same time and </span>
+<span class="sd">            applicable if rowwise=False</span>
+
+<span class="sd">        rowwise : bool, default=True </span>
+<span class="sd">            if True, a function of type1 should be passed else function of </span>
+<span class="sd">            type2</span>
+
+<span class="sd">        inplace : bool, default=True </span>
+<span class="sd">            If True, the dataframes will be modified. </span>
+<span class="sd">            If False, new columns will be created with suffix as specified </span>
+<span class="sd">            in suffix parameter</span>
+<span class="sd">        </span>
+<span class="sd">        suffix : str, default=&#39;_modified&#39;</span>
+<span class="sd">            If inplace argument is False, then this is the suffix applied to</span>
+<span class="sd">            the column name to creat a new column. </span>
+<span class="sd">            Note that if such a column already exists, it will be overwritten</span>
+
+<span class="sd">        combine_data : bool, default=False</span>
+<span class="sd">            Works only in case of rowwise=False. If yes, the type 2 function </span>
+<span class="sd">            will be applied on the combined dataset together, ie. a vector </span>
+<span class="sd">            with observations of all the 3 datasets concatenated will be </span>
+<span class="sd">            passed to it and it should return a vector with numbers in the</span>
+<span class="sd">            same order so that they can be mapped back.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#check:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">column</span><span class="p">,</span><span class="s1">&#39;column&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="s2">&quot;The func parameter should be a callable function&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">rowwise</span><span class="p">,</span><span class="s1">&#39;rowwise&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span><span class="s1">&#39;inplace&#39;</span><span class="p">,</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span><span class="s1">&#39;suffix&#39;</span><span class="p">,</span><span class="n">basestring</span><span class="p">)</span> 
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">subset_check</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="n">new_var</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_var</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">column</span><span class="p">,</span><span class="n">suffix</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+        
+        
+        <span class="c1">#function to apply func as per rowwise:</span>
+        <span class="k">def</span> <span class="nf">applyfunc</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">rowwise</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">rowwise</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">combine_data</span><span class="p">:</span>
+            <span class="c1">#get tuple of available data</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">applyfunc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">combined_data</span><span class="p">(),</span><span class="n">column</span><span class="p">,</span><span class="n">rowwise</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="n">ind</span><span class="o">=</span><span class="mi">0</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">ind</span><span class="p">:</span><span class="n">ind</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="n">ind</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">new_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">applyfunc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">column</span><span class="p">,</span><span class="n">rowwise</span><span class="p">)</span>
+
+        <span class="c1">#Update the list of columns if inplace False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">update_column_list</span><span class="p">()</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Aarshay Jain.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1.0al',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
