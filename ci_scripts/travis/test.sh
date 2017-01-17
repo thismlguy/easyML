@@ -7,7 +7,7 @@ mkdir -p $TEST_DIR
 cd $TEST_DIR
 
 if [[ "$COVERAGE" == "true" ]]; then
-	py.test --cov=$MODULE $MODULE/tests/
+	py.test --cov=$MODULE $MODULE
 else
-	py.test $MODULE/tests/
+	py.test $MODULE
 fi
