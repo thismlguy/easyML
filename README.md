@@ -1,15 +1,21 @@
-#easyML - An python packge to streamline data analysis tasks [built on sklearn]
+#easyML - Code Less, Do More!!
+
+[![CircleCI Status](https://circleci.com/gh/aarshayj/easyML.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/aarshayj/easyML/tree/master)
 
 **easyML** is a python package designed to streamline the process of analyzing datasets using predictive models. It covers crutial aspects the of data analysis process starting from preprocessing, to feature engineering and finally predictive modeling.
 
 They key advantage of this package is the DataBlock module using which you can create a block of your data at the start of analysis. The other modules take this block as input and seemlessly work on your data together. It definitely comes at the cost of loss of generalization as compared to the raw scikit-learn features, but the idea is to incorporate typically used actions and also provide options for flexibility through user-defined tasks. The package is particularly useful for begineers and intermediate level python data science enthusiasts, who are looking to get the job done without worrying about the code.
 
 ## Important Links
-HTML Documentation - Coming soon!
-Examples - Coming soon!
+* [HTML Documentation](https://aarshayj.github.io/easyML/)
+* [PyPi](https://pypi.python.org/pypi/easyML/0.1.0)
+* Examples - Coming soon!
 
 ## Installation and Usage
 The module can be installed using Github or PyPi as:
+```
+pip install easyML
+```
 
 ## Motivation - How it all began?
 
