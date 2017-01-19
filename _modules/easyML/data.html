@@ -139,32 +139,38 @@
 <span class="c1">#Python 3 support:</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
 
-<span class="c1"># %matplotlib inline    #only valid for iPython notebook</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
 <span class="kn">import</span> <span class="nn">collections</span>     <span class="c1">#to maintain dp as an ordered dictionary</span>
+<span class="kn">from</span> <span class="nn">.base_class</span> <span class="k">import</span> <span class="n">BaseClass</span>
 
 <span class="c1">#####################################################################</span>
 <span class="c1">##### DEFINE DATA_BLOCK CLASS</span>
 <span class="c1">#####################################################################</span>
 
-<div class="viewcode-block" id="DataBlock"><a class="viewcode-back" href="../../datablock.html#easyML.data.DataBlock">[docs]</a><span class="k">class</span> <span class="nc">DataBlock</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="DataBlock"><a class="viewcode-back" href="../../datablock.html#easyML.data.DataBlock">[docs]</a><span class="k">class</span> <span class="nc">DataBlock</span><span class="p">(</span><span class="n">BaseClass</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Define the data block which contains the entire set of data. </span>
 <span class="sd">    This is a unique data structure which will be passed as input to </span>
 <span class="sd">    the other classes of this module. This helps in packaging all the</span>
 <span class="sd">    data together so that every action is performed on all the dataframes</span>
 <span class="sd">    together, thus reducing the coding overheads significantly.</span>
 
+<span class="sd">    Note: The function will CREATE COPIES of the dataset by default. If the</span>
+<span class="sd">    data size is too big, then you can either pass file-paths from where to </span>
+<span class="sd">    read data or set the makeCopy parameter to False.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    __________</span>
-<span class="sd">    train : pandas dataframe </span>
+<span class="sd">    train : pandas dataframe or str</span>
 <span class="sd">        The training data, which is used to train the model.</span>
 <span class="sd">        This data should have both the predictors, i.e. independent data</span>
-<span class="sd">        and the target, i.e. dependent data</span>
+<span class="sd">        and the target, i.e. dependent data.</span>
+<span class="sd">        The data can be passed as a pandas dataframe or the filepath to the</span>
+<span class="sd">        .csv file which stores the data. Only .csv extension is supported </span>
+<span class="sd">        for now.</span>
 <span class="sd">        This data has to be provided.</span>
 
-<span class="sd">    test : pandas dataframe or None</span>
+<span class="sd">    test : pandas dataframe or str or None</span>
 <span class="sd">        The testing data.</span>
 <span class="sd">        This data should have both the predictors, i.e. independent data</span>
 <span class="sd">        and the target, i.e. dependent data.</span>
@@ -172,9 +178,12 @@
 <span class="sd">        a lot of data is available and it is feasible to split it into train</span>
 <span class="sd">        or test. Otherwise, cross-validation is performed on training data</span>
 <span class="sd">        and there is no explicit test data.</span>
+<span class="sd">        The data can be passed as a pandas dataframe or the filepath to the</span>
+<span class="sd">        .csv file which stores the data. Only .csv extension is supported </span>
+<span class="sd">        for now.</span>
 <span class="sd">        Pass None to the argument if data is not available.</span>
 <span class="sd">    </span>
-<span class="sd">    predict : pandas dataframe</span>
+<span class="sd">    predict : pandas or str dataframe</span>
 <span class="sd">        The data with unknown labels or targets, which are to be predicted. </span>
 <span class="sd">        This is generally available in online hackathons where it is called</span>
 <span class="sd">        as a test set because true labels are available with the organizers </span>
@@ -182,6 +191,9 @@
 <span class="sd">        module, any data without known targets should be passed into predict</span>
 <span class="sd">        dataframe because we will make these predictions and export the </span>
 <span class="sd">        results.</span>
+<span class="sd">        The data can be passed as a pandas dataframe or the filepath to the</span>
+<span class="sd">        .csv file which stores the data. Only .csv extension is supported </span>
+<span class="sd">        for now.</span>
 <span class="sd">        Pass None to the argument if data is not available.</span>
 
 <span class="sd">        Note that a target column with all None values will be added to this</span>
@@ -197,6 +209,12 @@
 <span class="sd">        This can be left empty at the time of initialization but will inhibit</span>
 <span class="sd">        the functioning of certain methods in the module related to </span>
 <span class="sd">        exporting data.</span>
+
+<span class="sd">    makeCopy : bool, default=True</span>
+<span class="sd">        if True, then copies of the dataframes passed into the class </span>
+<span class="sd">        initialization will be created. Otherwise, the function will point </span>
+<span class="sd">        to the same variables as in your environment and they will get </span>
+<span class="sd">        modified by the functions of easyML module.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    __________</span>
@@ -214,10 +232,29 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">predict</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">train</span> <span class="o">=</span> <span class="n">train</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">test</span> <span class="o">=</span> <span class="n">test</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">predict</span> <span class="o">=</span> <span class="n">predict</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">predict</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">makeCopy</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype2</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="s1">&#39;train&#39;</span><span class="p">,(</span><span class="nb">str</span><span class="p">,</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">makeCopy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">train</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train</span> <span class="o">=</span> <span class="n">train</span>
+        
+        <span class="k">if</span> <span class="n">test</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype2</span><span class="p">(</span><span class="n">test</span><span class="p">,</span><span class="s1">&#39;test&#39;</span><span class="p">,(</span><span class="nb">str</span><span class="p">,</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">makeCopy</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">test</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">test</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">test</span> <span class="o">=</span> <span class="n">test</span>
+
+        <span class="k">if</span> <span class="n">predict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_datatype2</span><span class="p">(</span><span class="n">predict</span><span class="p">,</span><span class="s1">&#39;predict&#39;</span><span class="p">,(</span><span class="nb">str</span><span class="p">,</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">makeCopy</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">predict</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">predict</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">predict</span> <span class="o">=</span> <span class="n">predict</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
     

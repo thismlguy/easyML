@@ -198,7 +198,7 @@ object of that class and then pass it as a parameter.</p>
 <p class="rubric">Methods</p>
 <dl class="method">
 <dt id="easyML.preprocess.PreProcess.check_missing">
-<code class="descname">check_missing</code><span class="sig-paren">(</span><em>subset=None</em>, <em>printResult=True</em>, <em>returnSeries=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/preprocess.html#PreProcess.check_missing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.preprocess.PreProcess.check_missing" title="Permalink to this definition">¶</a></dt>
+<code class="descname">check_missing</code><span class="sig-paren">(</span><em>subset=None</em>, <em>printResult=True</em>, <em>returnResult=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/preprocess.html#PreProcess.check_missing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.preprocess.PreProcess.check_missing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the missing values in the all dataframes. 
 The target column in the predict variable will not be 
 checked here because it is assumed to have all missing values.</p>
@@ -209,10 +209,12 @@ values are to be checked.
 If None, all columns checked</dd>
 <dt>printResult</dt>
  <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>if True, the result will be printed</dd>
-<dt>returnSeries</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False </span><dd>if True, the function will return a tuple of 3 objects each one 
-being a pandas Series with index as the column name and value as 
-the number of missing values in the column</dd>
+<dt>returnResult</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False </span><dd>if True, the function will return a dictionary with keys as the 
+name of the dataset (train/test/predict) and values as a series 
+object with index as column name and values as the number of 
+missing values in that column. It will contain all columns even 
+if they have 0 missing values.</dd>
 </dl>
 <dl class="docutils">
 <dt>missing_values</dt>

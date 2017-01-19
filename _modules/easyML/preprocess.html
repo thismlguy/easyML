@@ -146,6 +146,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">mode</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">collections</span>
 
 <span class="kn">from</span> <span class="nn">.base_class</span> <span class="k">import</span> <span class="n">BaseClass</span>
 <span class="kn">from</span> <span class="nn">.data</span> <span class="k">import</span> <span class="n">DataBlock</span>
@@ -184,7 +185,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">data_present</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PreProcess.check_missing"><a class="viewcode-back" href="../../preprocess.html#easyML.preprocess.PreProcess.check_missing">[docs]</a>    <span class="k">def</span> <span class="nf">check_missing</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">printResult</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">returnSeries</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">printResult</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">returnResult</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Checks the missing values in the all dataframes. </span>
 <span class="sd">        The target column in the predict variable will not be </span>
 <span class="sd">        checked here because it is assumed to have all missing values.</span>
@@ -199,10 +200,12 @@
 <span class="sd">        printResult : bool, default=True </span>
 <span class="sd">            if True, the result will be printed</span>
 
-<span class="sd">        returnSeries : bool, default=False </span>
-<span class="sd">            if True, the function will return a tuple of 3 objects each one </span>
-<span class="sd">            being a pandas Series with index as the column name and value as </span>
-<span class="sd">            the number of missing values in the column</span>
+<span class="sd">        returnResult : bool, default=False </span>
+<span class="sd">            if True, the function will return a dictionary with keys as the </span>
+<span class="sd">            name of the dataset (train/test/predict) and values as a series </span>
+<span class="sd">            object with index as column name and values as the number of </span>
+<span class="sd">            missing values in that column. It will contain all columns even </span>
+<span class="sd">            if they have 0 missing values.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        _______</span>
@@ -222,7 +225,7 @@
             <span class="n">subset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">columns</span>
 
         <span class="n">check_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datablock</span><span class="o">.</span><span class="n">data_present</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">miss_val</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">subset</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">isnull</span><span class="p">()))</span>
             <span class="k">if</span> <span class="n">key</span><span class="o">==</span><span class="s1">&#39;predict&#39;</span><span class="p">:</span>
                 <span class="c1">#Remove target index if present:</span>
@@ -242,8 +245,8 @@
                                 <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Num Missing Values&#39;</span><span class="p">])</span>
                     <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">returnSeries</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">miss_train</span><span class="p">,</span> <span class="n">miss_test</span><span class="p">,</span> <span class="n">miss_predict</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">returnResult</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">check_dict</span></div>
 
 
 <div class="viewcode-block" id="PreProcess.imputation"><a class="viewcode-back" href="../../preprocess.html#easyML.preprocess.PreProcess.imputation">[docs]</a>    <span class="k">def</span> <span class="nf">imputation</span><span class="p">(</span>
