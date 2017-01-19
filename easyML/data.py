@@ -5,32 +5,38 @@
 #Python 3 support:
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# %matplotlib inline    #only valid for iPython notebook
 import pandas as pd
 import numpy as np
-
 import collections     #to maintain dp as an ordered dictionary
+from .base_class import BaseClass
 
 #####################################################################
 ##### DEFINE DATA_BLOCK CLASS
 #####################################################################
 
-class DataBlock(object):
+class DataBlock(BaseClass):
     """ Define the data block which contains the entire set of data. 
     This is a unique data structure which will be passed as input to 
     the other classes of this module. This helps in packaging all the
     data together so that every action is performed on all the dataframes
     together, thus reducing the coding overheads significantly.
 
+    Note: The function will CREATE COPIES of the dataset by default. If the
+    data size is too big, then you can either pass file-paths from where to 
+    read data or set the makeCopy parameter to False.
+
     Parameters
     __________
-    train : pandas dataframe 
+    train : pandas dataframe or str
         The training data, which is used to train the model.
         This data should have both the predictors, i.e. independent data
-        and the target, i.e. dependent data
+        and the target, i.e. dependent data.
+        The data can be passed as a pandas dataframe or the filepath to the
+        .csv file which stores the data. Only .csv extension is supported 
+        for now.
         This data has to be provided.
 
-    test : pandas dataframe or None
+    test : pandas dataframe or str or None
         The testing data.
         This data should have both the predictors, i.e. independent data
         and the target, i.e. dependent data.
@@ -38,9 +44,12 @@ class DataBlock(object):
         a lot of data is available and it is feasible to split it into train
         or test. Otherwise, cross-validation is performed on training data
         and there is no explicit test data.
+        The data can be passed as a pandas dataframe or the filepath to the
+        .csv file which stores the data. Only .csv extension is supported 
+        for now.
         Pass None to the argument if data is not available.
     
-    predict : pandas dataframe
+    predict : pandas or str dataframe
         The data with unknown labels or targets, which are to be predicted. 
         This is generally available in online hackathons where it is called
         as a test set because true labels are available with the organizers 
@@ -48,6 +57,9 @@ class DataBlock(object):
         module, any data without known targets should be passed into predict
         dataframe because we will make these predictions and export the 
         results.
+        The data can be passed as a pandas dataframe or the filepath to the
+        .csv file which stores the data. Only .csv extension is supported 
+        for now.
         Pass None to the argument if data is not available.
 
         Note that a target column with all None values will be added to this
@@ -63,6 +75,12 @@ class DataBlock(object):
         This can be left empty at the time of initialization but will inhibit
         the functioning of certain methods in the module related to 
         exporting data.
+
+    makeCopy : bool, default=True
+        if True, then copies of the dataframes passed into the class 
+        initialization will be created. Otherwise, the function will point 
+        to the same variables as in your environment and they will get 
+        modified by the functions of easyML module.
 
     Attributes
     __________
@@ -80,10 +98,20 @@ class DataBlock(object):
 
     """
 
-    def __init__(self, train, test, predict, target, ID=None):
-        self.train = train
-        self.test = test
-        self.predict = predict
+    def __init__(
+            self, train, test, predict, target, ID=None, makeCopy=True):
+
+        self.check_datatype2(train,'train',(str,pd.DataFrame))
+        self.train = pd.DataFrame(train,copy=True)
+        
+        if test is not None:
+            self.check_datatype2(test,'test',(str,pd.DataFrame))
+            self.test = pd.DataFrame(test,copy=True)
+
+        if predict is not None:
+            self.check_datatype2(predict,'predict',(str,pd.DataFrame))
+            self.predict = pd.DataFrame(predict,copy=True)
+
         self.target = target
         self.ID = ID
     
