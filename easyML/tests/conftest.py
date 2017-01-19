@@ -22,5 +22,5 @@ def datablock():
 	df['var3'] = df['var3'].apply(lambda x: int(x)).astype(object)
 
 	#make outcome binary
-	df['target'].iloc[df['target']==2]=1
+	df['target'].loc[df['target']==2]=1
 	return DataBlock(df,df,df,'target')
