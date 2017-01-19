@@ -102,15 +102,24 @@ class DataBlock(BaseClass):
             self, train, test, predict, target, ID=None, makeCopy=True):
 
         self.check_datatype2(train,'train',(str,pd.DataFrame))
-        self.train = pd.DataFrame(train,copy=True)
+        if makeCopy:
+            self.train = pd.DataFrame(train,copy=True)
+        else:
+            self.train = train
         
         if test is not None:
             self.check_datatype2(test,'test',(str,pd.DataFrame))
-            self.test = pd.DataFrame(test,copy=True)
+            if makeCopy:
+                self.test = pd.DataFrame(test,copy=True)
+            else:
+                self.test = test
 
         if predict is not None:
             self.check_datatype2(predict,'predict',(str,pd.DataFrame))
-            self.predict = pd.DataFrame(predict,copy=True)
+            if makeCopy:
+                self.predict = pd.DataFrame(predict,copy=True)
+            else:
+                self.predict = predict
 
         self.target = target
         self.ID = ID
