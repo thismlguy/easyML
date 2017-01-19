@@ -12,6 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import mode
 import warnings
+import collections
 
 from .base_class import BaseClass
 from .data import DataBlock
@@ -50,7 +51,7 @@ class PreProcess(BaseClass):
         self.dp = self.datablock.data_present().values()
 
     def check_missing(
-        self, subset=None, printResult=True, returnSeries=False):
+        self, subset=None, printResult=True, returnResult=False):
         """ Checks the missing values in the all dataframes. 
         The target column in the predict variable will not be 
         checked here because it is assumed to have all missing values.
@@ -65,10 +66,12 @@ class PreProcess(BaseClass):
         printResult : bool, default=True 
             if True, the result will be printed
 
-        returnSeries : bool, default=False 
-            if True, the function will return a tuple of 3 objects each one 
-            being a pandas Series with index as the column name and value as 
-            the number of missing values in the column
+        returnResult : bool, default=False 
+            if True, the function will return a dictionary with keys as the 
+            name of the dataset (train/test/predict) and values as a series 
+            object with index as column name and values as the number of 
+            missing values in that column. It will contain all columns even 
+            if they have 0 missing values.
 
         Returns
         _______
@@ -88,7 +91,7 @@ class PreProcess(BaseClass):
             subset = self.datablock.columns
 
         check_dict = {}
-        for key,data in self.dp:
+        for key,data in self.datablock.data_present().items():
             miss_val = data[subset].apply(lambda x: sum(x.isnull()))
             if key=='predict':
                 #Remove target index if present:
@@ -108,8 +111,8 @@ class PreProcess(BaseClass):
                                 columns=['Num Missing Values'])
                     )
 
-        if returnSeries:
-            return (miss_train, miss_test, miss_predict)
+        if returnResult:
+            return check_dict
 
 
     def imputation(
