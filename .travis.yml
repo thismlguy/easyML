@@ -3,6 +3,6 @@ python:
   - "2.7"
   - "3.5"
 
-install: "pip install -r requirements_dev.txt"
+install: pip install tox
 script: tox
 # after_success: source ci_scripts/travis/success.sh
