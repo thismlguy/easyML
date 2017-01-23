@@ -163,16 +163,16 @@ together, thus reducing the coding overheads significantly.</p>
 data size is too big, then you can either pass file-paths from where to 
 read data or set the makeCopy parameter to False.</p>
 <dl class="docutils">
-<dt>train</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe or str</span><dd>The training data, which is used to train the model.
+<dt>train <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe or str</span></dt>
+<dd>The training data, which is used to train the model.
 This data should have both the predictors, i.e. independent data
 and the target, i.e. dependent data.
 The data can be passed as a pandas dataframe or the filepath to the
 .csv file which stores the data. Only .csv extension is supported 
 for now.
 This data has to be provided.</dd>
-<dt>test</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe or str or None</span><dd>The testing data.
+<dt>test <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe or str or None</span></dt>
+<dd>The testing data.
 This data should have both the predictors, i.e. independent data
 and the target, i.e. dependent data.
 This is typically used to evaluate models. This is generally used if
@@ -183,8 +183,8 @@ The data can be passed as a pandas dataframe or the filepath to the
 .csv file which stores the data. Only .csv extension is supported 
 for now.
 Pass None to the argument if data is not available.</dd>
-<dt>predict</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">pandas or str dataframe</span><dd><p class="first">The data with unknown labels or targets, which are to be predicted. 
+<dt>predict <span class="classifier-delimiter">:</span> <span class="classifier">pandas or str dataframe</span></dt>
+<dd><p class="first">The data with unknown labels or targets, which are to be predicted. 
 This is generally available in online hackathons where it is called
 as a test set because true labels are available with the organizers 
 which are used to evaluate the model. But for the purpose of this 
@@ -199,29 +199,29 @@ Pass None to the argument if data is not available.</p>
 dataframe by the module to allow integration with other datasets. If 
 such a column already exists, then its values will be made None.</p>
 </dd>
-<dt>target</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str </span><dd>The name of the variable representing the values to be predicted</dd>
-<dt>ID</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str or list of str or None, default None</span><dd>The name of the variavle(s) which individually/together form a 
+<dt>target <span class="classifier-delimiter">:</span> <span class="classifier">str </span></dt>
+<dd>The name of the variable representing the values to be predicted</dd>
+<dt>ID <span class="classifier-delimiter">:</span> <span class="classifier">str or list of str or None, default None</span></dt>
+<dd>The name of the variavle(s) which individually/together form a 
 unique entity for each observation. 
 This can be left empty at the time of initialization but will inhibit
 the functioning of certain methods in the module related to 
 exporting data.</dd>
-<dt>makeCopy</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True</span><dd>if True, then copies of the dataframes passed into the class 
+<dt>makeCopy <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True</span></dt>
+<dd>if True, then copies of the dataframes passed into the class 
 initialization will be created. Otherwise, the function will point 
 to the same variables as in your environment and they will get 
 modified by the functions of easyML module.</dd>
 </dl>
 <dl class="docutils">
-<dt>train</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe </span><dd>Same as passed values. Provided so that separate copies of data are 
+<dt>train <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe </span></dt>
+<dd>Same as passed values. Provided so that separate copies of data are 
 not requried.</dd>
-<dt>test</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe </span><dd>Same as passed values. Provided so that separate copies of data are 
+<dt>test <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe </span></dt>
+<dd>Same as passed values. Provided so that separate copies of data are 
 not requried.</dd>
-<dt>predict</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe </span><dd>Same as passed values. Provided so that separate copies of data are 
+<dt>predict <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe </span></dt>
+<dd>Same as passed values. Provided so that separate copies of data are 
 not requried.</dd>
 </dl>
 <p class="rubric">Methods</p>
@@ -232,8 +232,8 @@ not requried.</dd>
 predict) and value has the actual data. 
 Only the dataframe available are returned</p>
 <dl class="docutils">
-<dt>dictionary</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">dict</span><dd>A dictionary with key as the name of the data (train/test/
+<dt>dictionary <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd>A dictionary with key as the name of the data (train/test/
 predict) and value has the actual data</dd>
 </dl>
 </dd></dl>
@@ -244,16 +244,16 @@ predict) and value has the actual data</dd>
 <dd><p>Get a dataframe with all dataframes combined into one.
 Only the dataframe available are returned.</p>
 <dl class="docutils">
-<dt>addSource</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span><dd>if True, a column names &#8216;source&#8217; will be added containing the
+<dt>addSource <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span></dt>
+<dd>if True, a column names &#8216;source&#8217; will be added containing the
 name of the data (train/test/predict) to which the particular
 observation belongs.
 Note: if a column named source already exists, it will be 
 overwritten.</dd>
 </dl>
 <dl class="docutils">
-<dt>df</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe</span><dd>A combined dataframe containg observation from all dataframes 
+<dt>df <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe</span></dt>
+<dd>A combined dataframe containg observation from all dataframes 
 in the datablock.
 Note that the values of the target variable for predict dataframe
 will be None</dd>

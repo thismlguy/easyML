@@ -203,25 +203,25 @@ object of that class and then pass it as a parameter.</p>
 <dd><p>Used to create a categorical feature from a numeric feature by 
 binning specific ranges of numbers together.</p>
 <dl class="docutils">
-<dt>column</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str </span><dd>This represents the column on which the function is to be applied</dd>
-<dt>cut_points</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">list of num </span><dd>This represents a list of numbers at which the data has to be 
+<dt>column <span class="classifier-delimiter">:</span> <span class="classifier">str </span></dt>
+<dd>This represents the column on which the function is to be applied</dd>
+<dt>cut_points <span class="classifier-delimiter">:</span> <span class="classifier">list of num </span></dt>
+<dd>This represents a list of numbers at which the data has to be 
 cut. For example, an input [5,10] will divide the column into 3 
 categories: [(-inf,5],(5,10],(10,inf)]</dd>
-<dt>labels</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">list of str or None, default=None</span><dd>User-defined labels for the resulting category in increasing 
+<dt>labels <span class="classifier-delimiter">:</span> <span class="classifier">list of str or None, default=None</span></dt>
+<dd>User-defined labels for the resulting category in increasing 
 order. The length of the list should be 1 more than the length 
 of cuts_points. 
 If None, then default labels are 0, 1, ..., n-1. Note that an 
 object type feature is formed if custom labels provided, 
 otherwise the returned columns is of type numeric by default.</dd>
-<dt>inplace</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, then the original column in the data will be modified.
+<dt>inplace <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span></dt>
+<dd>If True, then the original column in the data will be modified.
 If False, then a new column will be created with a suffix as 
 specified by suffix parameter.</dd>
-<dt>suffix</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_bin&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+<dt>suffix <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_bin&#8217;</span></dt>
+<dd>If inplace argument is False, then this is the suffix applied to
 the column name to creat a new column. 
 Note that if such a column already exists, it will be overwritten</dd>
 </dl>
@@ -234,10 +234,10 @@ Note that if such a column already exists, it will be overwritten</dd>
 Note that only the categories specified in the combine_dict will be 
 changed and rest all will remain as it is.</p>
 <dl class="docutils">
-<dt>column</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str </span><dd>This represents the column on which the function is to be applied</dd>
-<dt>combine_dict</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">dict</span><dd>This represents the replacement dictionary of the form 
+<dt>column <span class="classifier-delimiter">:</span> <span class="classifier">str </span></dt>
+<dd>This represents the column on which the function is to be applied</dd>
+<dt>combine_dict <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd>This represents the replacement dictionary of the form 
 {&#8216;new_categories&#8217;:[list of old categories]} where the dictionary 
 keys represents the new categories to be created and the values 
 represent the old categories which are to be combined to get the 
@@ -245,12 +245,12 @@ new one.
 For example, {&#8216;d&#8217;:[&#8216;a&#8217;,&#8217;b&#8217;,&#8217;c&#8217;]} will combine all &#8216;a&#8217;,&#8217;b&#8217;,&#8217;c&#8217; to 
 give just 1 category &#8216;d&#8217;, which might be a pre-existing category 
 or a new one.</dd>
-<dt>inplace</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, then the original column in the data will be modified.
+<dt>inplace <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span></dt>
+<dd>If True, then the original column in the data will be modified.
 If False, then a new column will be created with a suffix as 
 specified by suffix parameter.</dd>
-<dt>suffix</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_combined&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+<dt>suffix <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_combined&#8217;</span></dt>
+<dd>If inplace argument is False, then this is the suffix applied to
 the column name to creat a new column. 
 Note that if such a column already exists, it will be overwritten</dd>
 </dl>

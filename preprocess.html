@@ -203,22 +203,22 @@ object of that class and then pass it as a parameter.</p>
 The target column in the predict variable will not be 
 checked here because it is assumed to have all missing values.</p>
 <dl class="docutils">
-<dt>subset</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">list of str or None, default=None</span><dd>A list specifying the subset of columns in which the missing
+<dt>subset <span class="classifier-delimiter">:</span> <span class="classifier">list of str or None, default=None</span></dt>
+<dd>A list specifying the subset of columns in which the missing
 values are to be checked.
 If None, all columns checked</dd>
-<dt>printResult</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>if True, the result will be printed</dd>
-<dt>returnResult</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False </span><dd>if True, the function will return a dictionary with keys as the 
+<dt>printResult <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span></dt>
+<dd>if True, the result will be printed</dd>
+<dt>returnResult <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False </span></dt>
+<dd>if True, the function will return a dictionary with keys as the 
 name of the dataset (train/test/predict) and values as a series 
 object with index as column name and values as the number of 
 missing values in that column. It will contain all columns even 
 if they have 0 missing values.</dd>
 </dl>
 <dl class="docutils">
-<dt>missing_values</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">tuple with 3 elements</span><dd>Returns a tuple of 3 pandas series objects pertaining to the 
+<dt>missing_values <span class="classifier-delimiter">:</span> <span class="classifier">tuple with 3 elements</span></dt>
+<dd>Returns a tuple of 3 pandas series objects pertaining to the 
 train, test and predict dataframes. Each series has index as the
 name of the columns having missing values and values as the
 number of missing values in the column.
@@ -231,33 +231,34 @@ Nothing is returned is returnSeries argument is False</dd>
 <dt id="easyML.preprocess.PreProcess.imputation">
 <code class="descname">imputation</code><span class="sig-paren">(</span><em>column</em>, <em>metric=None</em>, <em>groupby=None</em>, <em>constant=None</em>, <em>inplace=True</em>, <em>suffix=u'_imputed'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/preprocess.html#PreProcess.imputation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.preprocess.PreProcess.imputation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used to performs imputation on a column. The imputation is 
-performed on all dataframes together. For instance, if a median imputation is performed, then median of the train dataframe is 
+performed on all dataframes together. For instance, if a median 
+imputation is performed, then median of the train dataframe is 
 determined and the same value used to impute the test and predict
 dataframes as well.</p>
 <dl class="docutils">
-<dt>column</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str</span><dd>The name of the column to be imputed.</dd>
-<dt>metric</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str or None, default=None </span><dd>The metric to be used for imputation. Possible options:
+<dt>column <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>The name of the column to be imputed.</dd>
+<dt>metric <span class="classifier-delimiter">:</span> <span class="classifier">str or None, default=None </span></dt>
+<dd>The metric to be used for imputation. Possible options:
 - mean: impute with column mean (only for numeric columns)
 - median: impute with column median; default for numeric data 
 (only for numeric columns) 
 - mode: impute with column model default for non-numeric data 
 (only for non-numeric columns)</dd>
-<dt>groupby</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str or list of str or None, default=None </span><dd>The list of columns by which the metric is to be grouped for 
+<dt>groupby <span class="classifier-delimiter">:</span> <span class="classifier">str or list of str or None, default=None </span></dt>
+<dd>The list of columns by which the metric is to be grouped for 
 imputation. Note that these columns should not have any misssing 
 values.</dd>
-<dt>constant</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">no constraint, default=None </span><dd>To be used if a constant user-defined value is to be used for 
+<dt>constant <span class="classifier-delimiter">:</span> <span class="classifier">no constraint, default=None </span></dt>
+<dd>To be used if a constant user-defined value is to be used for 
 imputation. This is ignored if metric is not None.</dd>
-<dt>inplace</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, then the original column in the data will be imputed. 
+<dt>inplace <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span></dt>
+<dd>If True, then the original column in the data will be imputed. 
 If False, then a new column will be created with a suffix as 
 specified by suffix parameter. This can be used to test 
 different imputation metrics.</dd>
-<dt>suffix</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_imputed&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+<dt>suffix <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_imputed&#8217;</span></dt>
+<dd>If inplace argument is False, then this is the suffix applied to
 the column name to creat a new column. 
 Note that if such a column already exists, it will be overwritten</dd>
 </dl>
@@ -268,24 +269,24 @@ Note that if such a column already exists, it will be overwritten</dd>
 <code class="descname">scale</code><span class="sig-paren">(</span><em>subset</em>, <em>scale_range=(0</em>, <em>1)</em>, <em>inplace=True</em>, <em>suffix=u'_scaled'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/preprocess.html#PreProcess.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.preprocess.PreProcess.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used to scale the data within a fixed range of values.</p>
 <dl class="docutils">
-<dt>subset</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str or list of str</span><dd>This represents the columns to be scaled. 2 options:
+<dt>subset <span class="classifier-delimiter">:</span> <span class="classifier">str or list of str</span></dt>
+<dd>This represents the columns to be scaled. 2 options:
 - str: a single column to be scaled
 - list of str: list of multiple columns to be scaled</dd>
-<dt>scale_range</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">tuple or dictionary, default=(0,1)</span><dd>This represents the range to which the data is to be scaled. 
+<dt>scale_range <span class="classifier-delimiter">:</span> <span class="classifier">tuple or dictionary, default=(0,1)</span></dt>
+<dd>This represents the range to which the data is to be scaled. 
 2 options:
 - tuple (min,mex): fixed range for all columns mentioned in subset
 - dictionary : a dictionary with keys as columns mentioned in 
 subset list and values as the range to which that column is to 
 be scaled. Note that this works only if subset is entered as a 
 list of strings</dd>
-<dt>inplace</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, the dataframes will be modified and columns scaled. 
+<dt>inplace <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span></dt>
+<dd>If True, the dataframes will be modified and columns scaled. 
 If False, new columns will be created with suffix as specified 
 in suffix parameter</dd>
-<dt>suffix</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_scaled&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+<dt>suffix <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_scaled&#8217;</span></dt>
+<dd>If inplace argument is False, then this is the suffix applied to
 the column name to creat a new column. 
 Note that if such a column already exists, it will be overwritten</dd>
 </dl>
@@ -296,17 +297,17 @@ Note that if such a column already exists, it will be overwritten</dd>
 <code class="descname">normalize</code><span class="sig-paren">(</span><em>subset</em>, <em>norm=u'l2'</em>, <em>inplace=True</em>, <em>suffix=u'_norm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/easyML/preprocess.html#PreProcess.normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#easyML.preprocess.PreProcess.normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used to normalize the data using an l1 or l2 normalization.</p>
 <dl class="docutils">
-<dt>subset</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">list of str </span><dd>This represents the columns to be normalized. Input should be a 
+<dt>subset <span class="classifier-delimiter">:</span> <span class="classifier">list of str </span></dt>
+<dd>This represents the columns to be normalized. Input should be a 
 list of columns.</dd>
-<dt>norm</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str (&#8216;l1&#8217; or &#8216;l2&#8217;), default=&#8217;l2&#8217;</span><dd>This specifies the type or normalization- l1 or l2</dd>
-<dt>inplace</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, the dataframes will be modified and columns normalized. 
+<dt>norm <span class="classifier-delimiter">:</span> <span class="classifier">str (&#8216;l1&#8217; or &#8216;l2&#8217;), default=&#8217;l2&#8217;</span></dt>
+<dd>This specifies the type or normalization- l1 or l2</dd>
+<dt>inplace <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span></dt>
+<dd>If True, the dataframes will be modified and columns normalized. 
 If False, new columns will be created with suffix as specified 
 in suffix parameter</dd>
-<dt>suffix</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_norm&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+<dt>suffix <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_norm&#8217;</span></dt>
+<dd>If inplace argument is False, then this is the suffix applied to
 the column name to creat a new column. 
 Note that if such a column already exists, it will be overwritten</dd>
 </dl>
@@ -320,29 +321,29 @@ preprocessing part by incorporating functions not directly included
 in this package. Note that your function should be able to handle 
 missing values in data if they exist.</p>
 <dl class="docutils">
-<dt>column</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str </span><dd>This represents the column on which the function is to be applied</dd>
-<dt>func</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">pre-defined function </span><dd>A function which can be of 2 types:
+<dt>column <span class="classifier-delimiter">:</span> <span class="classifier">str </span></dt>
+<dd>This represents the column on which the function is to be applied</dd>
+<dt>func <span class="classifier-delimiter">:</span> <span class="classifier">pre-defined function </span></dt>
+<dd>A function which can be of 2 types:
 1. Takes a single value as input and returns a single value. 
 This function will be applied to each observation independently 
 and applicable if rowwise=True
 2. Takes a list of numbers as input and returns a list of same 
 size. This will be applied to entire column at same time and 
 applicable if rowwise=False</dd>
-<dt>rowwise</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>if True, a function of type1 should be passed else function of 
+<dt>rowwise <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span></dt>
+<dd>if True, a function of type1 should be passed else function of 
 type2</dd>
-<dt>inplace</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span><dd>If True, the dataframes will be modified. 
+<dt>inplace <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True </span></dt>
+<dd>If True, the dataframes will be modified. 
 If False, new columns will be created with suffix as specified 
 in suffix parameter</dd>
-<dt>suffix</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_modified&#8217;</span><dd>If inplace argument is False, then this is the suffix applied to
+<dt>suffix <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8217;_modified&#8217;</span></dt>
+<dd>If inplace argument is False, then this is the suffix applied to
 the column name to creat a new column. 
 Note that if such a column already exists, it will be overwritten</dd>
-<dt>combine_data</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span><dd>Works only in case of rowwise=False. If yes, the type 2 function 
+<dt>combine_data <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span></dt>
+<dd>Works only in case of rowwise=False. If yes, the type 2 function 
 will be applied on the combined dataset together, ie. a vector 
 with observations of all the 3 datasets concatenated will be 
 passed to it and it should return a vector with numbers in the

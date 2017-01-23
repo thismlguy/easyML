@@ -273,28 +273,28 @@ jupyter notebooks more informative if used</p>
 <dd><p>A method to perform GridSearch with cross-validation (CV) to find
 the optimum parameters for the model.</p>
 <dl class="docutils">
-<dt>param_grid</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">dict </span><dd>A dictionary with parameters names (string) as keys and lists of
+<dt>param_grid <span class="classifier-delimiter">:</span> <span class="classifier">dict </span></dt>
+<dd>A dictionary with parameters names (string) as keys and lists of
 parameter settings to try as values.
 Example: for a decision tree, {&#8216;max_depth&#8217;:[3,4,5],
 &#8216;min_samples_split&#8217;:[30,50,100]} will check all the 9 possible 
 combinations of parameters</dd>
-<dt>n_jobs</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int, default=1</span><dd>The number of jobs to run in parallel</dd>
-<dt>iid</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True</span><dd>If True, the data is assumed to be identically distributed across
+<dt>n_jobs <span class="classifier-delimiter">:</span> <span class="classifier">int, default=1</span></dt>
+<dd>The number of jobs to run in parallel</dd>
+<dt>iid <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=True</span></dt>
+<dd>If True, the data is assumed to be identically distributed across
 the folds, and the loss minimized is the total loss per sample, 
 and not the mean loss across the folds.</dd>
-<dt>cv</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int, default=5</span><dd>The number of cross-validation folds to generate for testing each
+<dt>cv <span class="classifier-delimiter">:</span> <span class="classifier">int, default=5</span></dt>
+<dd>The number of cross-validation folds to generate for testing each
 set of parameters</dd>
-<dt>getResults</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span><dd>If True, a pandas dataframe containing the results of the grid 
+<dt>getResults <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span></dt>
+<dd>If True, a pandas dataframe containing the results of the grid 
 search will be returned</dd>
 </dl>
 <dl class="docutils">
-<dt>gridsearch_results</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe</span><dd>The pandas dataframe containing the grid-search results.</dd>
+<dt>gridsearch_results <span class="classifier-delimiter">:</span> <span class="classifier">pandas dataframe</span></dt>
+<dd>The pandas dataframe containing the grid-search results.</dd>
 </dl>
 </dd></dl>
 
@@ -306,19 +306,19 @@ Note that CV is not performed in this function. The method will
 continue to eliminate some features (specified by step parameter)
 at each step until the specified number of features are reached.</p>
 <dl class="docutils">
-<dt>nfeat</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int or None, default=None</span><dd>The num of top features to select. If None, half of the features 
+<dt>nfeat <span class="classifier-delimiter">:</span> <span class="classifier">int or None, default=None</span></dt>
+<dd>The num of top features to select. If None, half of the features 
 are selected.</dd>
-<dt>step</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int or float, default=1</span><dd>If int, then step corresponds to the number of features to remove
+<dt>step <span class="classifier-delimiter">:</span> <span class="classifier">int or float, default=1</span></dt>
+<dd>If int, then step corresponds to the number of features to remove
 at each iteration. 
 If float and within (0.0, 1.0), then step corresponds to the 
 percentage (rounded down) of features to remove at each 
 iteration.
 If float and greater than one, then integral part will be
 considered as an integer input</dd>
-<dt>inplace</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span><dd>If True, the predictors of the class are modified to those 
+<dt>inplace <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span></dt>
+<dd>If True, the predictors of the class are modified to those 
 selected by the RFE procedure.</dd>
 </dl>
 <p>selected : A series object containing the selected features as 
@@ -335,21 +335,21 @@ as specified by the step argument. At each step, the CV score is
 determined using the scoring metric specified in the model. The set 
 of features with highest cross validation scores is then chosen.</p>
 <dl class="docutils">
-<dt>step</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int or float, default=1</span><dd>If int, then step corresponds to the number of features to remove
+<dt>step <span class="classifier-delimiter">:</span> <span class="classifier">int or float, default=1</span></dt>
+<dd>If int, then step corresponds to the number of features to remove
 at each iteration. 
 If float and within (0.0, 1.0), then step corresponds to the 
 percentage (rounded down) of features to remove at each 
 iteration.
 If float and greater than one, then integral part will be
 considered as an integer input</dd>
-<dt>inplace</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span><dd>If True, the predictors of the class are modified to those 
+<dt>inplace <span class="classifier-delimiter">:</span> <span class="classifier">bool, default=False</span></dt>
+<dd>If True, the predictors of the class are modified to those 
 selected by the RFECV procedure.</dd>
 </dl>
 <dl class="docutils">
-<dt>selected</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">pandas series</span><dd>A series object containing the selected features as 
+<dt>selected <span class="classifier-delimiter">:</span> <span class="classifier">pandas series</span></dt>
+<dd>A series object containing the selected features as 
 index and their rank in selection as values</dd>
 </dl>
 </dd></dl>
@@ -360,16 +360,16 @@ index and their rank in selection as values</dd>
 <dd><p>Set the parameters of the model. Only the parameters to be
 updated are required to be passed.</p>
 <dl class="docutils">
-<dt>param</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">dict, default None</span><dd>A dictionary of key,value pairs where the keys are the parameters
+<dt>param <span class="classifier-delimiter">:</span> <span class="classifier">dict, default None</span></dt>
+<dd>A dictionary of key,value pairs where the keys are the parameters
 to be updated and values as the new value of those parameters.
 If None, no update performed
 Ignored if set_default iss True.</dd>
-<dt>cv_folds</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">int, default None</span><dd>Pass the number of CV folds to be used in the model.
+<dt>cv_folds <span class="classifier-delimiter">:</span> <span class="classifier">int, default None</span></dt>
+<dd>Pass the number of CV folds to be used in the model.
 If None, no update performed.</dd>
-<dt>set_default</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">bool, default True</span><dd>if True, the model will be set to default parameters as defined 
+<dt>set_default <span class="classifier-delimiter">:</span> <span class="classifier">bool, default True</span></dt>
+<dd>if True, the model will be set to default parameters as defined 
 in model definition by scikit-learn. Note that this will not 
 affect the cv_folds parameter.</dd>
 </dl>
@@ -426,12 +426,12 @@ modified</p>
 <dd><p>This method creates a submission file (mostly used for online 
 hackathons) with the prediction classes.</p>
 <dl class="docutils">
-<dt>IDcol</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str or list of str</span><dd>The column names to be present in the exported file apart from
+<dt>IDcol <span class="classifier-delimiter">:</span> <span class="classifier">str or list of str</span></dt>
+<dd>The column names to be present in the exported file apart from
 the prediction columns. They generally represent the unique IDs
 of each observation or row.</dd>
-<dt>filename</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8221;submission.csv&#8221;</span><dd>The name of the file, along with the path, which will contain
+<dt>filename <span class="classifier-delimiter">:</span> <span class="classifier">str, default=&#8221;submission.csv&#8221;</span></dt>
+<dd>The name of the file, along with the path, which will contain
 the submission results. The exported file will have the columns
 mentioned in the IDcol parameter along with column representing
 the predicted class.</dd>
