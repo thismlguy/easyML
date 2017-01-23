@@ -1,8 +1,8 @@
 #easyML - Code Less, Do More!!
 
-[![CircleCI Status](https://circleci.com/gh/aarshayj/easyML.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/aarshayj/easyML/tree/master)
-
 [![Travis Status](https://travis-ci.org/aarshayj/easyML.svg?branch=master)](https://travis-ci.org/aarshayj/easyML)
+[![CircleCI Status](https://circleci.com/gh/aarshayj/easyML.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/aarshayj/easyML/tree/master)
+[![PyPi Version](https://badge.fury.io/py/easyML.svg)](https://pypi.python.org/pypi/easyML/0.1.0)
 
 **easyML** is a python package designed to streamline the process of analyzing datasets using predictive models. It covers crutial aspects the of data analysis process starting from preprocessing, to feature engineering and finally predictive modeling.
 
