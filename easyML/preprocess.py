@@ -6,10 +6,8 @@
 from __future__ import absolute_import, division
 from __future__ import print_function, unicode_literals
 
-# %matplotlib inline    #only valid for iPython notebook
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.stats import mode
 import warnings
 import collections
