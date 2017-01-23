@@ -119,7 +119,8 @@ class PreProcess(BaseClass):
             self, column, metric=None, groupby=None, constant=None, 
             inplace=True, suffix='_imputed'):
         """ Used to performs imputation on a column. The imputation is 
-        performed on all dataframes together. For instance, if a median imputation is performed, then median of the train dataframe is 
+        performed on all dataframes together. For instance, if a median 
+        imputation is performed, then median of the train dataframe is 
         determined and the same value used to impute the test and predict
         dataframes as well.
 

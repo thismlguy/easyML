@@ -14,7 +14,7 @@ from sklearn.datasets import load_iris
 from random import sample
 
 #####################################################################
-##### DEFINE TESTS
+##### TESTS FOR DATABLOCK
 #####################################################################
 
 def test_datablock(datablock):
@@ -22,20 +22,24 @@ def test_datablock(datablock):
 	assert datablock.test.shape == (150, 5)
 	assert datablock.predict.shape == (150, 5)
 
+#####################################################################
+##### TESTS FOR PREPROCESS
+#####################################################################
+
 def test_check_missing_no_missing(datablock):
-	print(datablock.train.describe())
 	pp = PreProcess(datablock)
 	result = pp.check_missing(printResult=False,returnResult=True)
 	for df,miss in result.items():
 		print(df,miss)
 		assert miss.sum()==0
 
-# def test_check_missing_missing_induced(datablock):
-# 	df = pd.DataFrame(datablock.train,copy=True)
-# 	pp = PreProcess(DataBlock(df,df,df,'target'))
-# 	num_miss=25
-# 	for data in pp.datablock.data_present().values():
-# 		data.iloc[sample(range(150),num_miss),'var0'] = np.nan
-# 	result = pp.check_missing(printResult=False,returnSeries=True)
-# 	for series in result:
-# 		assert series.sum()==num_miss
+def test_check_missing_missing_induced(datablock):
+	df = pd.DataFrame(datablock.train,copy=True)
+	pp = PreProcess(DataBlock(df,df,df,'target'))
+	num_miss=25
+	for data in pp.datablock.data_present().values():
+		data.iloc[sample(range(150),num_miss),0] = np.nan
+	result = pp.check_missing(printResult=False,returnResult=True)
+	for key,miss in result.items():
+		assert miss.sum()==num_miss
+
