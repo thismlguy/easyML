@@ -3,6 +3,8 @@ python:
   - "2.7"
   - "3.5"
 
-install: pip install tox
-script: tox
-# after_success: source ci_scripts/travis/success.sh
+install: 
+  - pip install -U pip
+  - pip install numpy==1.12.0 scipy==0.18.1
+  - pip install -r requirements_dev.txt
+script: pytest --pyarg easyML/tests/
